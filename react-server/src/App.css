@@ -1,0 +1,42 @@
+body {
+  margin: 0;
+  padding: 0;
+  background-color: rgb(255, 238, 238);
+  overscroll-behavior: none;
+}
+
+.App {
+  text-align: center;
+}
+
+.StickyHeader {
+  padding: 10px;
+  background-color: white;
+  position: sticky;
+  top: 0;
+}
+
+.walletInfo {
+  text-align: right;
+}
+
+.CreatorContent {
+  background-color: rgb(255, 250, 241);
+  max-width: 700px;
+  min-width: 400px;
+  min-height: 400px;
+  display: block;
+  margin: 100px auto;
+  margin-bottom: 0;
+  box-shadow: 0px 2px 2px 0px rgb(240, 191, 191);
+}
+
+.SubscriptionContent {
+  background-color: rgb(255, 250, 241);
+  max-width: 700px;
+  min-width: 400px;
+  min-height: 200px;
+  display: block;
+  margin: 100px auto;
+  box-shadow: 0px 2px 2px 0px rgb(240, 191, 191);
+}
