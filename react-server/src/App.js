@@ -8,7 +8,7 @@ function App() {
     <div className="App">
       <StickyHeader />
       <CreatorContent />
-      <SubscriptionContent />
+      <SubscriptionContent unlocked={true} />
     </div>
   );
 }

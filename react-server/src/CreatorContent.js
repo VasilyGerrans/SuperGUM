@@ -5,8 +5,7 @@ function CreatorContent() {
     return (
         <div>
             <Card className="CreatorContent" bordered={true}>
-                <h1>User</h1>
-                <h1>Connect wallet</h1>
+                Creator content
             </Card>
         </div>
     )
