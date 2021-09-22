@@ -9,6 +9,7 @@ import SuperFluidSDK from '@superfluid-finance/js-sdk';
 import Web3 from 'web3';
 
 function App () {
+  const [ isAuthenticated ] = useMoralis();
   const [ contentUnlocked, setContentUnlocked ] = useState(true);
   const [ sf, setSf ] = useState({});
   const [ connected, setConnected ] = useState(true);
@@ -19,25 +20,6 @@ function App () {
       enableWeb3();
     }
   }, [isAuthenticated]); */
-
-  /*
-  useEffect(() => {
-    /* 
-    Can be used later for dynamically changing the dapp appearance
-    when the user connects their wallet. We're not including functionality
-    for disconnecting. If the user decides to manually disconnect MetaMask, 
-    that is not considered a normal way to interract with the dapp. The dapp
-    would have to have authentication protections to ensure people can't
-    arbitrarily disconnect MetaMask and then do something in an account belonging
-    to that MetaMask account. (So, there will be checks on interacting with user
-    details).
-
-    We can later add a "Disconnect?" window when a user clicks on their wallet
-    address button, but that is more of a "brushing up" feature.
-    
-    console.log("web3 state changed");
-  }, [isWeb3Enabled])
-  */
 
   useEffect(() => {
     (async () => {
