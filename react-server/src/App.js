@@ -9,6 +9,7 @@ function App () {
   const { isAuthenticated, isWeb3Enabled, enableWeb3, user, Moralis } = useMoralis();
 
   const [ contentUnlocked, setContentUnlocked ] = useState(true);
+  const [ sf, setSf ] = useState({}); 
 
   useEffect(() => {
     if (isAuthenticated === true && isWeb3Enabled === false) {
