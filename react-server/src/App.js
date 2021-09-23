@@ -7,25 +7,38 @@ import { useMoralis } from 'react-moralis';
 import detectEthereumProvider from '@metamask/detect-provider';
 import SuperFluidSDK from '@superfluid-finance/js-sdk';
 import Web3 from 'web3';
+import { userExistingPageKey, userPageInfoKey } from './config';
 
 function App () {
-  const [ isAuthenticated ] = useMoralis();
+  const { isAuthenticated, user, setUserData, web3 } = useMoralis();
   const [ contentUnlocked, setContentUnlocked ] = useState(true);
   const [ sf, setSf ] = useState({});
   const [ connected, setConnected ] = useState(true);
   const [ account, setAccount ] = useState(""); 
 
-  /* useEffect(() => {
-    if (isAuthenticated === true && isWeb3Enabled === false) {
-      enableWeb3();
-    }
-  }, [isAuthenticated]); */
-
   useEffect(() => {
+    if (web3.utils.isAddress(window.location.pathname.slice(1))) {
+      console.log("address page!");
+    }
+    else if (window.location.pathname !== "/") {
+      window.location.pathname = "/"; // invalid paths are redirected to "/"
+    }
     (async () => {
       await initWeb3();
     })();
   }, []);
+
+  useEffect(() => { 
+    if (user !== null) {
+      console.log(user);
+      console.log(user.get(userExistingPageKey), user.get(userPageInfoKey));
+      const pageExists = user.get(userExistingPageKey);
+      if (pageExists === undefined) {
+        setUserData({[userExistingPageKey] : false});
+        console.log("called");
+      }
+    }
+  }, [user]);
 
   const initWeb3 = async () => {
     const provider = await detectEthereumProvider();

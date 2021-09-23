@@ -8,3 +8,6 @@ export const moralisLoginData = {
         serverUrl: "https://moiomrs3w5gm.grandmoralis.com:2053/server"
     }
 }
+
+export const userExistingPageKey = "userPageExists";
+export const userPageInfoKey = "userInfo";
