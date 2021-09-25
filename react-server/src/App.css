@@ -24,6 +24,10 @@ button {
   top: 0;
 }
 
+.account-highlight {
+  color: grey;
+}
+
 .walletInfo {
   text-align: right;
 }

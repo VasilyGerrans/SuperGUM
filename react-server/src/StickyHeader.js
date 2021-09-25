@@ -1,6 +1,7 @@
 import React from 'react';
 import { Navbar } from 'react-bootstrap';
 import { Button } from 'antd';
+import NavbarCollapse from 'react-bootstrap/esm/NavbarCollapse';
 
 function StickyHeader(props) {
     const enableWallet = async () => {
@@ -8,11 +9,7 @@ function StickyHeader(props) {
             method: 'eth_requestAccounts' 
         });
 
-        console.log("toggled");
-
         await props.getAccount();
-
-        console.log(props.account);
     }
 
     return (
@@ -23,6 +20,18 @@ function StickyHeader(props) {
                         Dycentra
                     </h2>
                 </Navbar.Brand>
+                {(props.balance > 0) ? 
+                <NavbarCollapse className="justify-content-end" style={{"display" : "none !important"}}>
+                    <a href="https://app.superfluid.finance/dashboard" target="_blank">
+                        DAIx balance: 
+                    </a>
+                    &nbsp;
+                    ${props.balance.toFixed(2)}
+                </NavbarCollapse>
+                :
+                <></>
+                }
+                    
                 <Navbar.Collapse className="justify-content-end">
                     {(props.connected === false || props.account === "" || props.account === undefined) ? 
                         <Button onClick={enableWallet}>
