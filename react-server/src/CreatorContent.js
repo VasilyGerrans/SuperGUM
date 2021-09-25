@@ -6,7 +6,12 @@ function CreatorContent(props) {
     return (
         <div>
             <Card className="CreatorContent" bordered={true}>
-                <ExperimentalSuperfluid createStream={props.createStream} balance={props.balance} address={props.address} />
+                <ExperimentalSuperfluid 
+                    createStream={props.createStream} 
+                    balance={props.balance} 
+                    address={props.address} 
+                    account={props.account}
+                />
             </Card>
         </div>
     )

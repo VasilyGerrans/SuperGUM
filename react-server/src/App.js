@@ -135,8 +135,26 @@ function App () {
     }
   }
 
-  const createStream = async (address, amount) => {
-    let newFlowRate = calculateFlowRate(amount);
+  const createStream = async (fromAddress, streamAmount) => {
+    let amount = new BigNumber(streamAmount).shiftedBy(18);
+    let addr = Web3.utils.toChecksumAddress(fromAddress);
+    let flowRate = calculateFlowRate(amount);
+
+    const tx = (sf.cfa._cfa.contract.methods
+    .createFlow(
+        tokens.ropsten.fDAIx.toString(),
+        addr.toString(),
+        flowRate.toString(),
+        "0x"
+    )
+    .encodeABI());
+
+    await sf.host.contract.methods
+    .callAgreement(sf.cfa._cfa.address, tx, "0x")
+    .send({from: account, type: "0x2"})
+    .then(console.log);
+
+    /* let newFlowRate = calculateFlowRate(amount);
 
     const tx = (sf.cfa._cfa.contract.methods
     .updateFlow(
@@ -151,7 +169,7 @@ function App () {
         sf.cfa._cfa.address, tx, "0x")
         .send({from: this.state.account, type: "0x2"})
     .then(console.log)
-    .then(await this.listOutFlows())   
+    .then(await this.listOutFlows());  */
   }
 
   const getBalance = async () => {
@@ -165,7 +183,7 @@ function App () {
   return (
     <div className="App">
       <StickyHeader balance={Math.floor(balance)} getAccount={getAccount} connected={connected} account={account} />
-      <CreatorContent createStream={createStream} balance={balance} address={address} />
+      <CreatorContent createStream={createStream} balance={balance} address={address} account={account} />
       <SubscriptionContent unlocked={contentUnlocked} />
     </div>
   );

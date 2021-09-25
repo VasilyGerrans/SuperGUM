@@ -22,7 +22,7 @@ function StickyHeader(props) {
                 </Navbar.Brand>
                 {(props.balance > 0) ? 
                 <NavbarCollapse className="justify-content-end" style={{"display" : "none !important"}}>
-                    <a href="https://app.superfluid.finance/dashboard" target="_blank">
+                    <a href="https://app.superfluid.finance/dashboard" target="_blank" rel="noreferrer">
                         DAIx balance: 
                     </a>
                     &nbsp;
