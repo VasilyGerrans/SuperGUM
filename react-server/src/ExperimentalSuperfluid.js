@@ -17,7 +17,6 @@ function ExperimentalSuperfluid(props) {
     }, []);
 
     const loadBalance = () => {
-        console.log(props);
         if (Number(props.balance) > 0) {
             setBalance(props.balance);
             setInterval(() => {
@@ -79,7 +78,7 @@ function ExperimentalSuperfluid(props) {
                 </div>
             }
 
-            <Button onClick={() => {props.createStream(props.account, perSecond)}}>
+            <Button onClick={() => {props.createStream(perSecond)}}>
                 Subscribe
             </Button>
         </div>

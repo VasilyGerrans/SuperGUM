@@ -2,6 +2,7 @@ import React from 'react';
 import { Navbar } from 'react-bootstrap';
 import { Button } from 'antd';
 import NavbarCollapse from 'react-bootstrap/esm/NavbarCollapse';
+import BigNumber from 'bignumber.js';
 
 function StickyHeader(props) {
     const enableWallet = async () => {
@@ -26,7 +27,7 @@ function StickyHeader(props) {
                         DAIx balance: 
                     </a>
                     &nbsp;
-                    ${props.balance.toFixed(2)}
+                    {BigNumber(props.balance).shiftedBy(-18).toFixed(3).toString()}
                 </NavbarCollapse>
                 :
                 <></>

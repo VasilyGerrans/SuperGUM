@@ -1,28 +1,28 @@
 import StickyHeader from './StickyHeader';
 import CreatorContent from './CreatorContent';
 import SubscriptionContent from './SubscriptionContent';
-import './App.css';
 import { useState, useEffect } from 'react';
 import { useMoralis } from 'react-moralis';
 import detectEthereumProvider from '@metamask/detect-provider';
 import SuperFluidSDK from '@superfluid-finance/js-sdk';
 import Web3 from 'web3';
-import { userExistingPageKey, userPageInfoKey, calculateFlowRate } from './config';
+import { userExistingPageKey, userPageInfoKey } from './config';
 import BigNumber from 'bignumber.js';
 import { ERC20abi } from './abis/ERC20abi';
 import { fDAIxabi } from './abis/fDAIxabi';
 import { tokens } from './config';
+import './App.css';
 
 function App () {
   const { user, setUserData, web3 } = useMoralis();
   const [ contentUnlocked, setContentUnlocked ] = useState(true);
   const [ sf, setSf ] = useState({});
   const [ connected, setConnected ] = useState(true);
-  const [ account, setAccount ] = useState(""); 
+  const [ account, setAccount ] = useState(""); // belonging to the client
   const [ fDAI, setfDAI ] = useState({});
   const [ fDAIx, setfDAIx ] = useState({});
   const [ balance, setBalance ] = useState(0);
-  const [ address, setAddress ] = useState("");
+  const [ address, setAddress ] = useState(""); // belonging to the page
   var atValidWalletAddress = false;
 
   useEffect(() => {
@@ -135,52 +135,38 @@ function App () {
     }
   }
 
-  const createStream = async (fromAddress, streamAmount) => {
-    let addr = Web3.utils.toChecksumAddress(fromAddress);
-
-    const tx = (sf.cfa._cfa.contract.methods
-    .createFlow(
-        tokens.ropsten.fDAIx.toString(),
-        addr.toString(),
-        streamAmount.toString(),
-        "0x"
-    )
-    .encodeABI());
-
-    await sf.host.contract.methods
-    .callAgreement(sf.cfa._cfa.address, tx, "0x")
-    .send({from: account, type: "0x2"})
-    .then(console.log);
-
-    /* let newFlowRate = calculateFlowRate(amount);
-
-    const tx = (sf.cfa._cfa.contract.methods
-    .updateFlow(
-        tokens.ropsten.fDAI.toString(),
-        address.toString(),
-        newFlowRate.toString(),
-        "0x"
-    )
-    .encodeABI());
-
-    await sf.host.contract.methods.callAgreement(
-        sf.cfa._cfa.address, tx, "0x")
-        .send({from: this.state.account, type: "0x2"})
-    .then(console.log)
-    .then(await this.listOutFlows());  */
+  const createStream = async streamAmount => {
+    await sf.user({
+      address: Web3.utils.toChecksumAddress(account),
+      token: tokens.ropsten.fDAIx
+    })
+    .flow({
+      recipient: address,
+      flowRate: streamAmount.toString()
+    })
+    .then(msg => {
+      console.log("MSG", msg);
+    });
   }
 
   const getBalance = async () => {
-    if (account.length > 0) {
-      const balance = await fDAIx.methods.balanceOf(account).call({from: account});
-      const adjustedBalance = Number(new BigNumber(balance).shiftedBy(-18)).toFixed(5);
-      setBalance(adjustedBalance);
+    try {
+      if (account.length > 0) {
+        await fDAIx.methods.balanceOf(account).call({from: account})
+        .then(bal => {
+          console.log(bal, typeof(bal), typeof(Number(bal)));
+          setBalance(Number(bal));
+        });
+      }
+    }
+    catch(e) {
+      alert(e);
     }
   }
 
   return (
     <div className="App">
-      <StickyHeader balance={Math.floor(balance)} getAccount={getAccount} connected={connected} account={account} />
+      <StickyHeader balance={balance} getAccount={getAccount} connected={connected} account={account} />
       <CreatorContent createStream={createStream} balance={balance} address={address} account={account} />
       <SubscriptionContent unlocked={contentUnlocked} />
     </div>
