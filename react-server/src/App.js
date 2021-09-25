@@ -6,7 +6,7 @@ import { useMoralis } from 'react-moralis';
 import detectEthereumProvider from '@metamask/detect-provider';
 import SuperFluidSDK from '@superfluid-finance/js-sdk';
 import Web3 from 'web3';
-import { userExistingPageKey, userPageInfoKey } from './config';
+import { userExistingPageKey, calculateStream } from './config';
 import BigNumber from 'bignumber.js';
 import { ERC20abi } from './abis/ERC20abi';
 import { fDAIxabi } from './abis/fDAIxabi';
@@ -23,6 +23,8 @@ function App () {
   const [ fDAIx, setfDAIx ] = useState({});
   const [ balance, setBalance ] = useState(0);
   const [ address, setAddress ] = useState(""); // belonging to the page
+  const [ currentSubscription, setCurrentSubscription ] = useState(0);
+  const [ flowInfo, setFlowInfo ] = useState({});
   var atValidWalletAddress = false;
 
   useEffect(() => {
@@ -53,6 +55,9 @@ function App () {
       (async () => {
         await getBalance();
       })();
+      (async () => {
+        await getFlow();
+      })();
     }
   }, [account])
 
@@ -75,7 +80,6 @@ function App () {
       setSf(sf);
 
       await getAccount();
-
       await getBalance();
 
       console.log("Successfully initialized");
@@ -144,9 +148,7 @@ function App () {
       recipient: address,
       flowRate: streamAmount.toString()
     })
-    .then(msg => {
-      console.log("MSG", msg);
-    });
+    .then(console.log);
   }
 
   const getBalance = async () => {
@@ -164,10 +166,31 @@ function App () {
     }
   }
 
+  const getFlow = async () => {
+    if (account !== "" && address !== "" && account !== address) {
+      await sf.cfa.getFlow({
+        superToken: tokens.ropsten.fDAIx,
+        sender: account,
+        receiver: address
+      })
+      .then(result => {
+        setFlowInfo(result);
+        setCurrentSubscription(calculateStream(Number(result.flowRate)));
+      });
+    }
+  }
+
   return (
     <div className="App">
       <StickyHeader balance={balance} getAccount={getAccount} connected={connected} account={account} />
-      <CreatorContent createStream={createStream} balance={balance} address={address} account={account} />
+      <CreatorContent 
+        createStream={createStream} 
+        balance={balance} 
+        address={address} 
+        account={account} 
+        currentSubscription={currentSubscription}
+        flowInfo={flowInfo}
+      />
       <SubscriptionContent unlocked={contentUnlocked} />
     </div>
   );

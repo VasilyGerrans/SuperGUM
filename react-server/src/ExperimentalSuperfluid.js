@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Button } from 'react-bootstrap';
 import { Input } from 'antd';
-import { calculateStreamPerSecond, calculateFlowRate } from './config';
+import { calculateFlowRate } from './config';
 import BigNumber from 'bignumber.js';
 
 function ExperimentalSuperfluid(props) {
@@ -9,25 +9,25 @@ function ExperimentalSuperfluid(props) {
     const [ inputField, setInputField ] = useState("");
     const [ perSecond, setPerSecond ] = useState(0);
 
+    var loaded = false;
+
     useEffect(() => {
-        loadBalance();
-        return () => {
-            clearInterval(loadBalance());
+        if (loaded === false && Object.entries(props.flowInfo).length > 0) {
+            loaded = true;
+            loadBalance();
+            return () => {
+                clearInterval(loadBalance());
+            }
         }
-    }, []);
+    }, [props.flowInfo]);
 
     const loadBalance = () => {
-        if (Number(props.balance) > 0) {
-            setBalance(props.balance);
+        if (Object.entries(props.flowInfo).length > 0) {
             setInterval(() => {
-                setBalance((Number(balance) + (calculateStreamPerSecond(props.outflows) / 10)).toFixed(5));
+                setBalance(BigNumber(((Date.now() - props.flowInfo.timestamp) * Number(props.flowInfo.flowRate)) / 1000).shiftedBy(-18).toFixed(8).toString())
             }, 
-            100);
+            1000);
         }
-    }
-
-    const processSubscribe = () => {
-
     }
 
     const onChange = e => {
@@ -55,18 +55,17 @@ function ExperimentalSuperfluid(props) {
             <h1>Experimental Superfluid</h1>
             <br />
             <p className="account-highlight">{props.address}</p>
-            <br />
             <Input 
                 type="number"
                 value={inputField} 
                 onChange={onChange} 
                 placeholder='0.00 DAIx' 
-            /> /month            
+                /> /month            
             <br />
             <br />
             {perSecond === 0 ?
                 <></>
-            :
+                :
                 <div>
                     <h3>
                         {BigNumber(perSecond)
@@ -81,6 +80,26 @@ function ExperimentalSuperfluid(props) {
             <Button onClick={() => {props.createStream(perSecond)}}>
                 Subscribe
             </Button>
+            {props.currentSubscription > 0 ?
+                <div>
+                    <hr />
+                    <p>
+                        Current subscription: {props.currentSubscription} DAIx/month
+                    </p>
+                    {balance > 0 ?
+                    <h1>
+                        <b>
+                            {balance} DAIx paid
+                        </b>
+                    </h1>
+                    :
+                    <div>
+                    </div>
+                    }
+                </div>
+            :
+                <br />
+            }
         </div>
     )
 }

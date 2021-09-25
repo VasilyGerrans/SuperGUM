@@ -11,6 +11,8 @@ function CreatorContent(props) {
                     balance={props.balance} 
                     address={props.address} 
                     account={props.account}
+                    currentSubscription={props.currentSubscription}
+                    flowInfo={props.flowInfo}
                 />
             </Card>
         </div>
