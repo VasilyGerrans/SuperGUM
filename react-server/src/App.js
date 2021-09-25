@@ -136,15 +136,13 @@ function App () {
   }
 
   const createStream = async (fromAddress, streamAmount) => {
-    let amount = new BigNumber(streamAmount).shiftedBy(18);
     let addr = Web3.utils.toChecksumAddress(fromAddress);
-    let flowRate = calculateFlowRate(amount);
 
     const tx = (sf.cfa._cfa.contract.methods
     .createFlow(
         tokens.ropsten.fDAIx.toString(),
         addr.toString(),
-        flowRate.toString(),
+        streamAmount.toString(),
         "0x"
     )
     .encodeABI());
