@@ -18,7 +18,7 @@ function StickyHeader(props) {
             <Navbar>
                 <Navbar.Brand className="brand">
                     <h2>
-                        Dycentra
+                        SuperGUM
                     </h2>
                 </Navbar.Brand>
                 {(props.balance > 0) ? 
