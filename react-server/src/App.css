@@ -2,7 +2,7 @@ body {
   margin: 0;
   padding: 0;
   background-color: rgb(255, 238, 238);
-  overscroll-behavior: none;
+  overscroll-behavior: none; /* find another way to get the scroll working properly (prevents scroll return) */
   font-family: Helvetica, Arial, sans-serif;
 }
 
@@ -11,6 +11,14 @@ button {
   box-shadow: 0px 2px 2px 0px rgb(240, 191, 191);
   border: 1px solid grey;
   padding: 10px 20px;
+}
+
+.cancel-button {
+  background-color: rgb(250, 215, 215);;
+}
+
+.confirm-button {
+  background-color: rgb(215, 250, 216);;
 }
 
 .App {
@@ -28,6 +36,10 @@ button {
   color: grey;
 }
 
+.bio-window {
+  padding: 10px 0px;
+}
+
 .walletInfo {
   text-align: right;
 }
@@ -42,6 +54,14 @@ button {
   margin-bottom: 0;
   box-shadow: 0px 2px 2px 0px rgb(240, 191, 191);
   padding: 30px;
+}
+
+.CreatedOther {
+  text-align: left;
+}
+
+.CreatedOther div {
+  display: inline-block;
 }
 
 .SubscriptionContent {

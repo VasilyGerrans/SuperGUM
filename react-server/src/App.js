@@ -7,7 +7,6 @@ import detectEthereumProvider from '@metamask/detect-provider';
 import SuperFluidSDK from '@superfluid-finance/js-sdk';
 import Web3 from 'web3';
 import { userExistingPageKey, calculateStream } from './config';
-import BigNumber from 'bignumber.js';
 import { ERC20abi } from './abis/ERC20abi';
 import { fDAIxabi } from './abis/fDAIxabi';
 import { tokens } from './config';
