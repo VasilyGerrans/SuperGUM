@@ -140,14 +140,23 @@ function App () {
 
   const createStream = async streamAmount => {
     await sf.user({
-      address: Web3.utils.toChecksumAddress(account),
+      address: account,
       token: tokens.ropsten.fDAIx
     })
     .flow({
       recipient: address,
       flowRate: streamAmount.toString()
     })
-    .then(console.log);
+    .then(() => {
+      (async () => {
+        await getFlow();
+      })();
+    })
+    .catch(() => {
+      (async () => {
+        await getFlow();
+      })();
+    })
   }
 
   const getBalance = async () => {
