@@ -151,11 +151,13 @@ function App () {
       (async () => {
         await getFlow();
       })();
+      console.log("Alpha");
     })
     .catch(() => {
       (async () => {
         await getFlow();
       })();
+      console.log("Beta");
     })
   }
 
@@ -184,6 +186,7 @@ function App () {
       .then(result => {
         setFlowInfo(result);
         setCurrentSubscription(calculateStream(Number(result.flowRate)));
+        console.log("updating", result);
       });
     }
   }

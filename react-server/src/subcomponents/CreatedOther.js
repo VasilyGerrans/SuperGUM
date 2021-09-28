@@ -33,6 +33,7 @@ function CreatedOther(props) {
     }, [props.flowInfo]);
 
     useEffect(() => {
+        console.log("sub", props.currentSubscription);
         if (props.currentSubscription > 0) {
             setSubscriptionNumber(props.currentSubscription);
             setPerSecond(BigNumber(calculateFlowRate(BigNumber(props.currentSubscription)
@@ -219,8 +220,8 @@ function CreatedOther(props) {
                             Name a fair price: <b><input type="number" step="0.01" placeholder={_minSubscription} value={minSubscription} onChange={onChangeMin} /> DAIx/month</b>
                         </div>
                         <div>
-                            <Button className="confirm-button" onClick={() => {                            
-                                props.createStream(minSubscription);
+                            <Button className="confirm-button" onClick={() => {    
+                                props.createStream(perSecond);
                                 setEditMode(false);
                                 setProcessingSF(true);                             
                             }}>
