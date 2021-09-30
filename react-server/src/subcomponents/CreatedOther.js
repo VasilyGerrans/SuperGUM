@@ -195,6 +195,7 @@ function CreatedOther(props) {
             :
             editMode === false ? 
                 <div>
+                    <br />
                     <Button onClick={() => {
                         setPerSecond(BigNumber(calculateFlowRate(BigNumber(_minSubscription)
                         .shiftedBy(18))));

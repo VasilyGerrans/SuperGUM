@@ -5,6 +5,7 @@ import ConnectViaMetaMask from './subcomponents/ConnectViaMetaMask';
 import NothingYetCreate from './subcomponents/NothingYetCreate';
 import NothingYetGo from './subcomponents/NothingYetGo';
 import CreatedOther from './subcomponents/CreatedOther';
+import CreatedUser from './subcomponents/CreatedUser';
 
 function CreatorContent(props) {
     return (
@@ -25,14 +26,17 @@ function CreatorContent(props) {
                 {/* <NothingYetGo 
                     address={props.address}
                 /> */}
-                <CreatedOther 
+                {/* <CreatedOther 
                     createStream={props.createStream} 
                     balance={props.balance} 
                     address={props.address} 
                     account={props.account}
                     currentSubscription={props.currentSubscription}
                     flowInfo={props.flowInfo}
-                />
+                /> */}
+                {/* <CreatedUser
+                    address={props.address}
+                /> */}
             </Card>
         </div>
     )

@@ -6,6 +6,12 @@ body {
   font-family: Helvetica, Arial, sans-serif;
 }
 
+div {
+  box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+}
+
 button {
   background-color: rgb(255, 250, 241);
   box-shadow: 0px 2px 2px 0px rgb(240, 191, 191);
@@ -44,8 +50,19 @@ button {
   color: grey;
 }
 
+.name-input {
+  font-weight: bold;
+  padding: 0;
+}
+
 .bio-window {
   padding: 10px 0px;
+  width: 100%;
+}
+
+.bio-window textarea {
+  width: 100%;
+  resize: none;
 }
 
 .walletInfo {
@@ -77,8 +94,39 @@ button {
 
 .CreatedOther {
   text-align: left;
+  display: grid;
+  grid-template-rows: 60px 30px 80px;
 }
 
 .CreatedOther div {
   display: inline-block;
+}
+
+.new-tooltip {
+  position: absolute;
+  display: inline;
+  background-color: black;
+  color: #fff;
+  border-radius: 6px;
+  padding: 5px 0px;
+  width: 120px;
+  text-align: center;
+  z-index: 1;
+}
+
+.CreatedUser {
+  text-align: left;
+  display: grid;
+  grid-template-rows: 60px 30px 80px;
+} /* add media width for smaller window */
+
+.CreatedUser div {
+  display: inline-block;
+}
+
+.CreatedUser input, 
+.CreatedUser textarea,
+.CreatedOther input,
+.CreatedOther textarea {
+  border: none;
 }
