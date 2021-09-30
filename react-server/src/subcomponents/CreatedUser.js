@@ -1,8 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { Button, Input } from 'antd';
-import { calculateFlowRate } from '../config';
-import BigNumber from 'bignumber.js';
-import { Spinner } from 'react-bootstrap';
 import AutosizeInput from 'react-input-autosize';
 
 function CreatedUser(props) {

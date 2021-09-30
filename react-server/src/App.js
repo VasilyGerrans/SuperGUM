@@ -9,7 +9,7 @@ import Web3 from 'web3';
 import { userExistingPageKey, calculateStream } from './config';
 import { ERC20abi } from './abis/ERC20abi';
 import { fDAIxabi } from './abis/fDAIxabi';
-import { tokens } from './config';
+import { tokens, PAGES } from './config';
 import './App.css';
 
 function App () {
@@ -24,6 +24,7 @@ function App () {
   const [ address, setAddress ] = useState(""); // belonging to the page
   const [ currentSubscription, setCurrentSubscription ] = useState(0);
   const [ flowInfo, setFlowInfo ] = useState({});
+  const [ currentPage, setCurrentPage ] = useState(PAGES.LOADING);
   var atValidWalletAddress = false;
 
   useEffect(() => {
@@ -58,7 +59,21 @@ function App () {
         await getFlow();
       })();
     }
-  }, [account])
+  }, [account]);
+
+  useEffect(() => {
+    if (web3.utils.isAddress(account)) {
+      if (account === address) {
+        setCurrentPage(PAGES.NOTHING_CREATE);
+      }
+      else {
+        setCurrentPage(PAGES.NOTHING_GO);
+      }
+    }
+    else if (connected === false) {
+      setCurrentPage(PAGES.CONNECT);
+    }
+  }, [account, address, connected]);
 
   const initWeb3 = async () => {
     const provider = await detectEthereumProvider();
@@ -201,6 +216,7 @@ function App () {
         account={account} 
         currentSubscription={currentSubscription}
         flowInfo={flowInfo}
+        currentPage={currentPage}
       />
       <SubscriptionContent unlocked={contentUnlocked} />
     </div>
