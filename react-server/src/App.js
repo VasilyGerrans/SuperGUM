@@ -32,14 +32,7 @@ function App () {
       return query.equalTo("ethAddress", web3.utils.toChecksumAddress(pageAddress)); 
     }
   }, [pageAddress]);
-  /*
-    HERE IT IS. I'VE DONE IT. I'VE DONE IT!!!!!!!
 
-    WE RETREIVE THE DATA FROM MORALIS AND IT APPROPRIATELY UPDATES OUR DATA FROM THE QUERY
-    THIS CAN NOW BE USED FOR USER MANAGEMENT OH MY GOD
-
-    HALF A DAY FOR THIS BOIIII 
-  */
   useEffect(() => {
     if (data !== undefined && data[0] !== undefined && data[0].attributes !== undefined) {
       setPageData(data[0].attributes);
