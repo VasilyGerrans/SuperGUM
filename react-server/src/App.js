@@ -2,18 +2,18 @@ import StickyHeader from './StickyHeader';
 import CreatorContent from './CreatorContent';
 import SubscriptionContent from './SubscriptionContent';
 import { useState, useEffect } from 'react';
-import { useMoralis } from 'react-moralis';
+import { useMoralis, useMoralisQuery } from 'react-moralis';
 import detectEthereumProvider from '@metamask/detect-provider';
 import SuperFluidSDK from '@superfluid-finance/js-sdk';
 import Web3 from 'web3';
-import { userExistingPageKey, calculateStream } from './config';
+import { calculateStream } from './config';
 import { ERC20abi } from './abis/ERC20abi';
 import { fDAIxabi } from './abis/fDAIxabi';
 import { tokens, PAGES } from './config';
 import './App.css';
 
 function App () {
-  const { user, setUserData, web3 } = useMoralis();
+  const { web3, Moralis } = useMoralis();
   const [ contentUnlocked, setContentUnlocked ] = useState(true);
   const [ sf, setSf ] = useState({});
   const [ connected, setConnected ] = useState(true);
@@ -21,37 +21,48 @@ function App () {
   const [ fDAI, setfDAI ] = useState({});
   const [ fDAIx, setfDAIx ] = useState({});
   const [ balance, setBalance ] = useState(0);
-  const [ address, setAddress ] = useState(""); // belonging to the page
+  const [ pageAddress, setPageAddress ] = useState(""); // belonging to the page
   const [ currentSubscription, setCurrentSubscription ] = useState(0);
   const [ flowInfo, setFlowInfo ] = useState({});
   const [ currentPage, setCurrentPage ] = useState(PAGES.LOADING);
-  var atValidWalletAddress = false;
+  const [ pageExists, setPageExists ] = useState(false);
+  const [ pageData, setPageData ] = useState({});
+  const { data, error, isLoading } = useMoralisQuery("Pages", query => { 
+    if (web3.utils.isAddress(pageAddress) === true) {
+      return query.equalTo("ethAddress", web3.utils.toChecksumAddress(pageAddress)); 
+    }
+  }, [pageAddress]);
+  /*
+    HERE IT IS. I'VE DONE IT. I'VE DONE IT!!!!!!!
+
+    WE RETREIVE THE DATA FROM MORALIS AND IT APPROPRIATELY UPDATES OUR DATA FROM THE QUERY
+    THIS CAN NOW BE USED FOR USER MANAGEMENT OH MY GOD
+
+    HALF A DAY FOR THIS BOIIII 
+  */
+  useEffect(() => {
+    if (data !== undefined && data[0] !== undefined && data[0].attributes !== undefined) {
+      setPageData(data[0].attributes);
+      determineCurrentPage();
+    }
+  }, [data]);
 
   useEffect(() => {
     const path = window.location.pathname.slice(1);
-    if (web3.utils.isAddress(path)) {
-      setAddress(path);
-      atValidWalletAddress = true;
+    if (web3.utils.isAddress(path) === false && window.location.pathname !== "/") {
+      window.location.pathname = "/"; 
     }
-    else if (window.location.pathname !== "/") {
-      window.location.pathname = "/"; // invalid paths are redirected to "/"
+    else {
+      (async () => {
+        await initWeb3();
+      })();
     }
-    (async () => {
-      await initWeb3();
-    })();
   }, []);
 
-  useEffect(() => { 
-    if (user !== null) {
-      const pageExists = user.get(userExistingPageKey);
-      if (pageExists === undefined) {
-        setUserData({[userExistingPageKey] : false});
-      }
-    }
-  }, [user]);
-
   useEffect(() => {
-    if (account != undefined && account != "" && web3.utils.isAddress(account)) {
+    console.log('account', account);
+    if (web3.utils.isAddress(account)) {
+      getPageAddress();
       (async () => {
         await getBalance();
       })();
@@ -62,19 +73,10 @@ function App () {
   }, [account]);
 
   useEffect(() => {
-    if (web3.utils.isAddress(account)) {
-      if (account === address) {
-        setCurrentPage(PAGES.NOTHING_CREATE);
-      }
-      else {
-        setCurrentPage(PAGES.NOTHING_GO);
-      }
-    }
-    else if (connected === false) {
-      setCurrentPage(PAGES.CONNECT);
-    }
-  }, [account, address, connected]);
-
+    determineCurrentPage();
+    console.log("YO", account, pageAddress);
+  }, [account, pageAddress, connected]);
+  
   const initWeb3 = async () => {
     const provider = await detectEthereumProvider();
     const web3 = new Web3(provider);
@@ -94,30 +96,22 @@ function App () {
       setSf(sf);
 
       await getAccount();
-      await getBalance();
-
-      console.log("Successfully initialized");
     }
     else {
-      console.log("NO METAMASK DETECTED");
+      determineCurrentPage();
     }
   }
 
   const getAccount = async () => {
+    console.log("GET ACCOUNT CALLED");
     const acct = await window.ethereum.request({method: 'eth_accounts'});
     if (acct.length > 0) {
       setConnected(true);
       setAccount(acct[0]);
-      if (atValidWalletAddress === false) {
-        setAddress(acct[0]);
-      }
     }
     else if (acct.length === 0) {
       setConnected(false);
       setAccount("");
-      if (atValidWalletAddress === false) {
-        setAddress("");
-      }
     }
 
     let currentAccount = acct[0];
@@ -130,7 +124,8 @@ function App () {
 
     function handleAccountsChanged(accounts) {
       if (accounts.length === 0) {
-        console.log("Please connect to MetaMask.");
+        // connect to metamask!
+        determineCurrentPage();
       }
       else if (accounts[0] !== currentAccount) {
         currentAccount = accounts[0];
@@ -138,18 +133,90 @@ function App () {
     }
     window.ethereum.on('accountsChanged', isConnected, handleAccountsChanged);
   }
-
+  
   const isConnected = () => {
     let accts = window.ethereum._state.accounts;
-
     if (accts.length === 0) {
       console.log("NOT CONNECTED");
       setConnected(false);
     }
     else {
       console.log("CONNECTED");
-      setAccount(accts[0]);
       setConnected(true);
+      setAccount(accts[0]);
+      if (window.location.pathname === "/") {
+        setPageAddress(accts[0]);
+      }
+    }
+  }
+
+  const getBalance = async () => {
+    try {
+      if (account.length > 0) {
+        await fDAIx.methods.balanceOf(account).call({from: account})
+        .then(bal => {
+          console.log("balance", bal, typeof(bal), typeof(Number(bal)));
+          setBalance(Number(bal));
+        });
+      }
+    }
+    catch(e) {
+      alert(e);
+    }
+  }
+
+  const getPageAddress = () => {
+    if (window.location.pathname === "/") {
+      setPageAddress(web3.utils.toChecksumAddress(account));
+    }
+    else {
+      setPageAddress(web3.utils.toChecksumAddress(window.location.pathname.slice(1)));
+    }
+  }
+  
+  const determineCurrentPage = () => {
+    console.log("determine currenct page");
+    if (web3.utils.isAddress(account)) {
+      if (account !== undefined && pageAddress !== undefined &&
+        account.toLowerCase() === pageAddress.toLowerCase()) {
+        if (data !== undefined && data[0] !== undefined && data[0].attributes !== undefined) { // enter condition to ensure this page exists
+          console.log(data[0].attributes);
+          setPageExists(true);
+          setCurrentPage(PAGES.USER);
+        }
+        else {
+          setPageExists(false);
+          setCurrentPage(PAGES.NOTHING_CREATE);
+        }
+      }
+      else {
+        console.log(account, pageAddress);
+        setPageExists(false);
+        setCurrentPage(PAGES.NOTHING_GO);
+      }
+    }
+    else if (connected === false) {
+      setPageExists(false);
+      setCurrentPage(PAGES.CONNECT);
+    }
+  }
+  
+  const modifyPage = async (username, ethAddress, bio, minSubscription) => {
+    const query = new Moralis.Query("Pages");
+    const result = await query.equalTo("ethAddress", ethAddress).first(); // f'n works!!!!
+    
+    if (result === undefined) {
+      const newPage = new Moralis.Object.extend("Pages")();
+      newPage.set("username", username);
+      newPage.set("bio", bio);
+      newPage.set("minSubscription", minSubscription);
+      await newPage.save();
+    }
+    else {
+      result.set("username", username);
+      result.set("bio", bio);
+      result.set("minSubscription", minSubscription);
+      await result.save();
     }
   }
 
@@ -159,7 +226,7 @@ function App () {
       token: tokens.ropsten.fDAIx
     })
     .flow({
-      recipient: address,
+      recipient: pageAddress,
       flowRate: streamAmount.toString()
     })
     .then(() => {
@@ -176,32 +243,16 @@ function App () {
     })
   }
 
-  const getBalance = async () => {
-    try {
-      if (account.length > 0) {
-        await fDAIx.methods.balanceOf(account).call({from: account})
-        .then(bal => {
-          console.log(bal, typeof(bal), typeof(Number(bal)));
-          setBalance(Number(bal));
-        });
-      }
-    }
-    catch(e) {
-      alert(e);
-    }
-  }
-
   const getFlow = async () => {
-    if (account !== "" && address !== "" && account !== address) {
+    if (account !== "" && pageAddress !== "" && account !== pageAddress) {
       await sf.cfa.getFlow({
         superToken: tokens.ropsten.fDAIx,
         sender: account,
-        receiver: address
+        receiver: pageAddress
       })
       .then(result => {
         setFlowInfo(result);
         setCurrentSubscription(calculateStream(Number(result.flowRate)));
-        console.log("updating", result);
       });
     }
   }
@@ -212,11 +263,17 @@ function App () {
       <CreatorContent 
         createStream={createStream} 
         balance={balance} 
-        address={address} 
+        address={pageAddress} 
         account={account} 
         currentSubscription={currentSubscription}
         flowInfo={flowInfo}
         currentPage={currentPage}
+        setCurrentPage={setCurrentPage}
+        pageExists={pageExists}
+        determineCurrentPage={determineCurrentPage}
+        getPageAddress={getPageAddress}
+        modifyPage={modifyPage}
+        pageData={pageData}
       />
       <SubscriptionContent unlocked={contentUnlocked} />
     </div>

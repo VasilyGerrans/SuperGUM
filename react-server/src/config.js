@@ -10,8 +10,6 @@ export const moralisLoginData = {
         serverUrl: "https://moiomrs3w5gm.grandmoralis.com:2053/server"
     }
 }
-export const userExistingPageKey = "userPageExists";
-export const userPageInfoKey = "userInfo";
 export const tokens = {
     ropsten: {
         fDAI: "0x15F0Ca26781C3852f8166eD2ebce5D18265cceb7",

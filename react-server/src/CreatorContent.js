@@ -1,7 +1,6 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { Card } from 'antd';
 import { Spinner } from 'react-bootstrap';
-import ExperimentalSuperfluid from './ExperimentalSuperfluid';
 import ConnectViaMetaMask from './subcomponents/ConnectViaMetaMask';
 import NothingYetCreate from './subcomponents/NothingYetCreate';
 import NothingYetGo from './subcomponents/NothingYetGo';
@@ -25,11 +24,14 @@ function CreatorContent(props) {
                 props.currentPage === PAGES.NOTHING_CREATE ?
                 <NothingYetCreate 
                     address={props.address}
+                    setCurrentPage={props.setCurrentPage}
                 /> 
                 :
                 props.currentPage === PAGES.NOTHING_GO ?
                 <NothingYetGo 
                     address={props.address}
+                    getPageAddress={props.getPageAddress}
+                    determineCurrentPage={props.determineCurrentPage}
                 />
                 :
                 props.currentPage === PAGES.OTHER ?
@@ -44,6 +46,10 @@ function CreatorContent(props) {
                 :
                 <CreatedUser
                     address={props.address}
+                    pageExists={props.pageExists}
+                    determineCurrentPage={props.determineCurrentPage}
+                    modifyPage={props.modifyPage}
+                    pageData={props.pageData}
                 />                            
                 }
                 {/* <ExperimentalSuperfluid 

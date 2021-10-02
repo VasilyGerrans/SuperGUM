@@ -6,11 +6,11 @@ body {
   font-family: Helvetica, Arial, sans-serif;
 }
 
-div {
+/* div {
   box-sizing: border-box;
   -moz-box-sizing: border-box;
   -webkit-box-sizing: border-box;
-}
+} */
 
 button {
   background-color: rgb(255, 250, 241);
@@ -44,6 +44,7 @@ button {
   background-color: white;
   position: sticky;
   top: 0;
+  z-index: 1000;
 }
 
 .account-highlight {
@@ -115,7 +116,7 @@ button {
 }
 
 .CreatedUser {
-  text-align: left;
+  text-align: left !important;
   display: grid;
   grid-template-rows: 60px 30px 80px;
 } /* add media width for smaller window */
@@ -128,5 +129,5 @@ button {
 .CreatedUser textarea,
 .CreatedOther input,
 .CreatedOther textarea {
-  border: none;
+  border: 1px solid rgb(152, 152, 152);
 }

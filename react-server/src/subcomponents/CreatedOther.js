@@ -79,7 +79,7 @@ function CreatedOther(props) {
             }
 
             if (num < _minSubscription && warningMsg === "") {
-                setWarningMsg(`*You have specified a subscription amount less than the creator's minimum (${_minSubscription.toFixed(2).toString()} DAIx/month). You will not gain access to subscription content.`);
+                setWarningMsg(`Warning: You have specified a subscription amount less than the creator's minimum (${_minSubscription.toFixed(2).toString()} DAIx/month). You will not gain access to subscription content.`);
             }
             else if (num >= _minSubscription) {
                 setWarningMsg("");
