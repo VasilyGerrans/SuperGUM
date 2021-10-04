@@ -2,7 +2,6 @@ body {
   margin: 0;
   padding: 0;
   background-color: rgb(255, 238, 238);
-  overscroll-behavior: none; /* find another way to get the scroll working properly (prevents scroll return) */
   font-family: Helvetica, Arial, sans-serif;
 }
 
