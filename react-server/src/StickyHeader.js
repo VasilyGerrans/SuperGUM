@@ -9,7 +9,6 @@ function StickyHeader(props) {
         window.ethereum.request({ 
             method: 'eth_requestAccounts' 
         });
-
         await props.getAccount();
     }
 
@@ -23,14 +22,18 @@ function StickyHeader(props) {
                 </Navbar.Brand>
                 {(props.balance > 0) ? 
                 <NavbarCollapse className="justify-content-end" style={{"display" : "none !important"}}>
-                    <a href="https://app.superfluid.finance/dashboard" target="_blank" rel="noreferrer">
-                        DAIx balance: 
-                    </a>
+                    DAIx balance: 
                     &nbsp;
-                    {BigNumber(props.balance).shiftedBy(-18).toFixed(3).toString()}
+                    <a href="https://app.superfluid.finance/dashboard" target="_blank" rel="noreferrer">
+                        {BigNumber(props.balance).shiftedBy(-18).toFixed(3).toString()}
+                    </a>
                 </NavbarCollapse>
                 :
-                <></>
+                <NavbarCollapse className="justify-content-end" style={{"display" : "none !important"}}>
+                    <a href="https://app.superfluid.finance/dashboard" target="_blank" rel="noreferrer">
+                        Get DAIx
+                    </a>
+                </NavbarCollapse>
                 }
                     
                 <Navbar.Collapse className="justify-content-end">
@@ -39,7 +42,9 @@ function StickyHeader(props) {
                             Connect wallet
                         </Button>
                     :
-                        <Button>
+                        <Button onClick={() => {
+                            props.history.push("/");
+                        }}>
                             {props.account.toString().substring(0, 4)}...{props.account.toString().substring(38)}
                         </Button>
                     }

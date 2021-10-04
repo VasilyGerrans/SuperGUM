@@ -14,11 +14,6 @@ function CreatedUser(props) {
     const [ editBioMode, setEditBioMode ] = useState(false);
     const [ editFlowMode, setEditFlowMode ] = useState(false);
 
-    const [ warningMsg, setWarningMsg ] = useState("");
-    
-    const bioCharacterLimit = 300;
-    const usernameCharacterLimit = 40;
-
     useEffect(() => {
         return () => {
             reset();
@@ -26,15 +21,22 @@ function CreatedUser(props) {
     }, []);
 
     useEffect(() => {
-        if (props.pageData !== undefined) {
-            setUsername(props.pageData.username);
-            _setUsername(props.pageData.username);
-            setBio(props.pageData.bio);
-            _setBio(props.pageData.bio);
-            setMinSubscription(props.pageData.minSubscription);
-            _setMinSubscription(props.pageData.minSubscription);
+        if (props !== undefined) {
+            console.log("page data about to be ascribed", props);
+            if (props.username !== undefined) {
+                setUsername(props.username);
+                _setUsername(props.username);
+            }
+            if (props.bio !== undefined) {
+                setBio(props.bio);
+                _setBio(props.bio);
+            }
+            if (props.minSubscription !== undefined) {
+                setMinSubscription(props.minSubscription);
+                _setMinSubscription(props.minSubscription);
+            }
         }
-    }, [props.pageData]);
+    }, [props]);
 
     const reset = () => {
         setUsername("");
@@ -49,18 +51,14 @@ function CreatedUser(props) {
         (async () => props.modifyPage(username, props.address, bio, Number(minSubscription)))();
     }
 
-    const del = () => {
-
-    }
-
     const onBioChange = e => {
-        if (e.target.value.length <= bioCharacterLimit) {
+        if (e.target.value.length <= props.bioCharacterLimit) {
             setBio(e.target.value);
         }
     }
 
     const onUsernameChange = e => {
-        if (e.target.value.length <= usernameCharacterLimit) {
+        if (e.target.value.length <= props.usernameCharacterLimit) {
             setUsername(e.target.value);
         }
     }
@@ -71,7 +69,6 @@ function CreatedUser(props) {
 
     return ( // add a little clipboard copy thing next to the address later
         <div>
-            {props.pageExists === true ?
             <div className="CreatedUser">  
                 <div
                     style={{
@@ -105,7 +102,7 @@ function CreatedUser(props) {
                             left: "-160px",
                             top: "7px"
                         }}>
-                            {username.length} / {usernameCharacterLimit}
+                            {username.length} / {props.usernameCharacterLimit}
                         </span>
                     </div>
                     }
@@ -168,7 +165,7 @@ function CreatedUser(props) {
                             left: "-160px",
                             top: "19px"
                         }}>
-                            {bio.length} / {bioCharacterLimit}
+                            {bio.length} / {props.bioCharacterLimit}
                         </span>
                     </div>
                     }
@@ -225,130 +222,6 @@ function CreatedUser(props) {
                     </div>
                 </div>
             </div>
-            :
-            <div className="CreatedUser">
-                <div
-                    style={{
-                        "display": "flex", 
-                        "justifyContent": "space-between",
-                        "alignItems": "center"
-                    }}
-                >
-                    <div
-                        style={{
-                            position: "relative"
-                        }}
-                    >
-                        <h1>
-                            <AutosizeInput
-                                className="name-input"
-                                type="text" 
-                                placeholder={_username.length > 0 ? _username : "Username"} 
-                                value={username} 
-                                onChange={onUsernameChange}
-                                inputStyle={{
-                                    fontWeight: "bold",
-                                    padding: "0px"
-                                }}
-                            />
-                        </h1>
-                        <span className="new-tooltip" style={{                            
-                            left: "-160px",
-                            top: "7px"
-                        }}>
-                            {username.length} / {usernameCharacterLimit}
-                        </span>
-                    </div>                    
-                </div>                   
-                <p className="account-highlight">{props.address}</p>
-                <div className="bio-window">
-                    <div style={{
-                        position: "relative",
-                        width: "100%"
-                    }}>
-                        <textarea 
-                            onChange={onBioChange} 
-                            value={bio} 
-                            rows="3"
-                            style={{
-                                margin: "0px", 
-                                padding: "0px"
-                            }}
-                            placeholder="Bio"
-                        >
-                        </textarea>
-                        <span className="new-tooltip" style={{
-                            left: "-160px",
-                            top: "19px"
-                        }}>
-                            {bio.length} / {bioCharacterLimit}
-                        </span>
-                    </div>                    
-                </div>  
-                <div>
-                    <hr />
-                    <div 
-                        className="CreatedUser" 
-                        style={{
-                            "display": "flex", 
-                            "justifyContent": "space-between",
-                            "alignItems": "center",
-                            "margin": "20px 0px"
-                        }}
-                    >
-                        <div>
-                            Minimum subscription: 
-                            <b> 
-                                <Input 
-                                    value={minSubscription}
-                                    type="number"
-                                    onChange={onSubChange}
-                                    min={0}   
-                                    step={0.01}                             
-                                >
-                                </Input> DAIx/month
-                            </b>
-                        </div>
-                        <div>
-                        </div>
-                    </div>
-                </div>
-                <br />
-                <div style={{margin: "auto"}}>
-                    <Button className="confirm-button" onClick={() => {
-                        if (username === "") {
-                            setWarningMsg("Error: You must specify a username to create a page.");
-                        }
-                        else if (username.length > usernameCharacterLimit) {
-                            setWarningMsg(`Error: Username must be below ${usernameCharacterLimit} characters.`);
-                        }
-                        else if (bio.length > bioCharacterLimit) {
-                            setWarningMsg(`Error: Bio must be below ${bioCharacterLimit} characters.`);
-                        }
-                        else {
-                            (async () => props.modifyPage(username, props.address, bio, minSubscription))();
-                        }
-                    }}>
-                        Create
-                    </Button>
-                    <Button className="cancel-button" onClick={() => {
-                        console.log("canclec");
-                        props.determineCurrentPage();
-                        reset();
-                    }}>
-                        Cancel
-                    </Button>
-                </div>
-                {warningMsg.length > 0 ?
-                <div className="warning-message">
-                    {warningMsg}
-                </div>
-                :
-                <>
-                </>
-                }
-            </div>
-            }
         </div>
     )
 }

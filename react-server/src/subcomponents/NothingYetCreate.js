@@ -1,7 +1,6 @@
 import { Button } from 'antd';
 import React from 'react';
 import EmptyBox from '../images/emptybox.png';
-import { PAGES } from '../config';
 
 function NothingYetCreate(props) {
     return (
@@ -12,7 +11,7 @@ function NothingYetCreate(props) {
                 <img src={EmptyBox} alt="" height="200" />
             </p>
             <Button onClick={() => {
-                props.setCurrentPage(PAGES.USER);
+                props.setPageCreationMode(true);
             }}>
                 Create
             </Button>

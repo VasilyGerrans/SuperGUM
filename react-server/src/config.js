@@ -35,11 +35,3 @@ export function calculateStreamPerSecond(amount) {
     let streamSecond = amount / (86400 * 30);
     return streamSecond;
 }
-export const PAGES = Object.freeze({
-    LOADING: "LOADING",
-    CONNECT: "CONNECT",
-    OTHER: "OTHER",
-    USER: "USER",
-    NOTHING_CREATE: "NOTHING_CREATE",
-    NOTHING_GO: "NOTHING_GO"
-  });

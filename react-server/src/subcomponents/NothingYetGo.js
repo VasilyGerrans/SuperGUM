@@ -11,9 +11,7 @@ function NothingYetGo(props) {
                 <img src={EmptyBox} alt="" height="200" />
             </p>
             <Button onClick={() => {
-                window.history.pushState({}, "", "/");
-                props.getPageAddress();
-                props.determineCurrentPage();
+                props.history.push("/");
             }}>
                 Go to my page
             </Button>

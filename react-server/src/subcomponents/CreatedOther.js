@@ -8,8 +8,6 @@ function CreatedOther(props) {
     const [ balance, setBalance ] = useState(0);
     const [ perSecond, setPerSecond ] = useState(0);
 
-    const [ username, setUsername ] = useState("John Wick");
-    const [ bio, setBio ] = useState("My name is John Wick, and I am a professional poet, storyteller, narrative-explorer, and rhymer-extraordinaire. Come and join me on my epic crypto journey as I fight to see just how long a mildly amusing Lorem Ipsum substitute can drag on before it's no longer amusing enough to keep writing.");
     const [ editMode, setEditMode ] = useState(false);
     const [ subscriptionNumber, setSubscriptionNumber ] = useState(0);
     const [ processingSF, setProcessingSF ] = useState(false);
@@ -17,11 +15,16 @@ function CreatedOther(props) {
     const [ minSubscription, setMinSubscription ] = useState(0);
     const [ warningMsg, setWarningMsg ] = useState("");
 
-    var loaded = false;
+    useEffect(() => {
+        if (props.flowInfo !== undefined && 
+        props.flowInfo.timestamp !== undefined &&
+        props.flowInfo.flowRate !== undefined) {
+            setBalance(BigNumber(((Date.now() - props.flowInfo.timestamp) * Number(props.flowInfo.flowRate)) / 1000).shiftedBy(-18).toFixed(8).toString());
+        }
+    }, []);
 
     useEffect(() => {
-        if (loaded === false && Object.entries(props.flowInfo).length > 0) {
-            loaded = true;
+        if (Object.entries(props.flowInfo).length > 0) {
             if (Object.entries(props.flowInfo).length > 0) {
                 setProcessingSF(false);
                 const interval = setInterval(intervalCall, 1000);
@@ -33,7 +36,6 @@ function CreatedOther(props) {
     }, [props.flowInfo]);
 
     useEffect(() => {
-        console.log("sub", props.currentSubscription);
         if (props.currentSubscription > 0) {
             setSubscriptionNumber(props.currentSubscription);
             setPerSecond(BigNumber(calculateFlowRate(BigNumber(props.currentSubscription)
@@ -90,108 +92,108 @@ function CreatedOther(props) {
     return ( // add a little clipboard copy thing next to the address later
         <div>
             <div className="CreatedOther">                         
-                <h1><b>{username}</b></h1>
+                <h1><b>{props.username}</b></h1>
                 <p className="account-highlight">{props.address}</p>
                 <div className="bio-window">
                     <p>
-                        {bio}
+                        {props.bio}
                     </p>
                 </div>                
             </div>
             {props.currentSubscription > 0 ?
-                <div>
-                    <hr />
-                    <div 
-                        className="CreatedOther" 
-                        style={{
-                            "display":"flex", 
-                            "justifyContent": "space-between",
-                            "alignItems": "center",
-                            "margin": "20px 0px"
-                        }
-                    }>
+            <div>
+                <hr />
+                <div 
+                    className="CreatedOther" 
+                    style={{
+                        "display":"flex", 
+                        "justifyContent": "space-between",
+                        "alignItems": "center",
+                        "margin": "20px 0px"
+                    }
+                }>
+                    <div>
+                        {editMode === false ?
                         <div>
-                            {editMode === false ?
-                            <div>
-                                Current subscription: <b>{props.currentSubscription} DAIx/month</b>
-                            </div>
-                            :
-                            <div>
-                                Current subscription: <b><input type="number" step="0.01" placeholder={props.currentSubscription} value={subscriptionNumber} onChange={onChange} /> DAIx/month</b>
-                            </div>
-                            } 
+                            Current subscription: <b>{props.currentSubscription} DAIx/month</b>
                         </div>
+                        :
                         <div>
-                            {processingSF === true ?
-                            <Spinner animation="grow" role="status">
-                            </Spinner>   
-                            :
-                            editMode === false ?
-                            <div>
-                                <Button onClick={() => {
-                                    setEditMode(true);                                
-                                }}>
-                                    Change  
-                                </Button>
-                            </div>
-                            :
-                            <div>
-                                <Button className="confirm-button" onClick={() => {
-                                    if (props.currentSubscription !== subscriptionNumber) {
-                                        props.createStream(perSecond);
-                                        setEditMode(false);
-                                        setProcessingSF(true);
-                                    }
-                                    else {
-                                        setEditMode(false)
-                                        setSubscriptionNumber(props.currentSubscription);
-                                        setPerSecond(BigNumber(calculateFlowRate(BigNumber(props.currentSubscription)
-                                        .shiftedBy(18))));
-                                    }
-                                }}>
-                                    Confirm  
-                                </Button>
-                                <Button className="cancel-button" onClick={() => {
-                                    props.createStream(0);
+                            Current subscription: <b><input type="number" step="0.01" placeholder={props.currentSubscription} value={subscriptionNumber} onChange={onChange} /> DAIx/month</b>
+                        </div>
+                        } 
+                    </div>
+                    <div>
+                        {processingSF === true ?
+                        <Spinner animation="grow" role="status">
+                        </Spinner>   
+                        :
+                        editMode === false ?
+                        <div>
+                            <Button onClick={() => {
+                                setEditMode(true);                                
+                            }}>
+                                Change  
+                            </Button>
+                        </div>
+                        :
+                        <div>
+                            <Button className="confirm-button" onClick={() => {
+                                if (props.currentSubscription !== subscriptionNumber) {
+                                    props.createStream(perSecond);
                                     setEditMode(false);
                                     setProcessingSF(true);
-                                }}>
-                                    Cancel  
-                                </Button>
-                                <Button onClick={() => {
+                                }
+                                else {
                                     setEditMode(false)
                                     setSubscriptionNumber(props.currentSubscription);
                                     setPerSecond(BigNumber(calculateFlowRate(BigNumber(props.currentSubscription)
                                     .shiftedBy(18))));
-                                }}>
-                                    Back
-                                </Button>
-                            </div>
-                            }
+                                }
+                            }}>
+                                Confirm  
+                            </Button>
+                            <Button className="cancel-button" onClick={() => {
+                                props.createStream(0);
+                                setEditMode(false);
+                                setProcessingSF(true);
+                            }}>
+                                Cancel  
+                            </Button>
+                            <Button onClick={() => {
+                                setEditMode(false)
+                                setSubscriptionNumber(props.currentSubscription);
+                                setPerSecond(BigNumber(calculateFlowRate(BigNumber(props.currentSubscription)
+                                .shiftedBy(18))));
+                            }}>
+                                Back
+                            </Button>
                         </div>
+                        }
                     </div>
-                    {editMode === false ?
-                        balance > 0 ?
-                        <h1>
-                            <b>
-                                {balance} DAIx paid
-                            </b>
-                        </h1>
-                        :
-                        <div>
-                        </div>
-                    :
-                        <div>
-                            <h3>
-                                {BigNumber(perSecond)
-                                .shiftedBy(-18)
-                                .toFixed(8)
-                                .toString()}
-                            </h3>
-                            <p>DAIx per second</p>
-                        </div>
-                    }
                 </div>
+                {editMode === false ?
+                balance > 0 ?
+                <h1>
+                    <b>
+                        {balance} DAIx paid
+                    </b>
+                </h1>
+                :
+                <div>
+                </div>
+                :
+                <div>
+                    <h3>
+                        {BigNumber(perSecond)
+                        .shiftedBy(-18)
+                        .toFixed(8)
+                        .toString()}
+                    </h3>
+                    <p>DAIx per second</p>
+                </div>
+                }
+            </div>
             :
             editMode === false ? 
                 <div>

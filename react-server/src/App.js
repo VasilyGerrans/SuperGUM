@@ -1,16 +1,26 @@
-import StickyHeader from './StickyHeader';
-import CreatorContent from './CreatorContent';
-import SubscriptionContent from './SubscriptionContent';
 import { useState, useEffect } from 'react';
 import { useMoralis, useMoralisQuery } from 'react-moralis';
+import { Switch, Route } from 'react-router-dom';
+import { useHistory } from 'react-router';
+import { Card } from 'antd';
+import Web3 from 'web3';
 import detectEthereumProvider from '@metamask/detect-provider';
 import SuperFluidSDK from '@superfluid-finance/js-sdk';
-import Web3 from 'web3';
-import { calculateStream } from './config';
+import StickyHeader from './StickyHeader';
+import SubscriptionContent from './SubscriptionContent';
+import Home from './Home';
+import ConnectViaMetaMask from './subcomponents/ConnectViaMetaMask';
+import NothingYetCreate from './subcomponents/NothingYetCreate';
+import NothingYetGo from './subcomponents/NothingYetGo';
+import CreatedOther from './subcomponents/CreatedOther';
+import CreatingUser from './subcomponents/CreatingUser';
+import CreatedUser from './subcomponents/CreatedUser';
+import { Spinner } from 'react-bootstrap';
 import { ERC20abi } from './abis/ERC20abi';
 import { fDAIxabi } from './abis/fDAIxabi';
-import { tokens, PAGES } from './config';
+import { tokens } from './config';
 import './App.css';
+import Creator from './Creator';
 
 function App () {
   const { web3, Moralis } = useMoralis();
@@ -21,29 +31,24 @@ function App () {
   const [ fDAI, setfDAI ] = useState({});
   const [ fDAIx, setfDAIx ] = useState({});
   const [ balance, setBalance ] = useState(0);
-  const [ pageAddress, setPageAddress ] = useState(""); // belonging to the page
-  const [ currentSubscription, setCurrentSubscription ] = useState(0);
-  const [ flowInfo, setFlowInfo ] = useState({});
-  const [ currentPage, setCurrentPage ] = useState(PAGES.LOADING);
-  const [ pageExists, setPageExists ] = useState(false);
-  const [ pageData, setPageData ] = useState({});
-  const { data, error, isLoading } = useMoralisQuery("Pages", query => { 
+  // , setPageAddress ] = useState(""); // belonging to the page
+  // const [ currentSubscription, setCurrentSubscription ] = useState(0);
+  // const [ flowInfo, setFlowInfo ] = useState({});
+  const [ pageData, setPageData ] = useState(undefined);
+  const [ pageLoading, setPageLoading ] = useState(true);
+
+  const history = useHistory();
+  
+  /* const { data } = useMoralisQuery("Pages", query => { 
     if (web3.utils.isAddress(pageAddress) === true) {
       return query.equalTo("ethAddress", web3.utils.toChecksumAddress(pageAddress)); 
     }
-  }, [pageAddress]);
-
-  useEffect(() => {
-    if (data !== undefined && data[0] !== undefined && data[0].attributes !== undefined) {
-      setPageData(data[0].attributes);
-      determineCurrentPage();
-    }
-  }, [data]);
+  }, [pageAddress]); */
 
   useEffect(() => {
     const path = window.location.pathname.slice(1);
     if (web3.utils.isAddress(path) === false && window.location.pathname !== "/") {
-      window.location.pathname = "/"; 
+      history.push("/"); 
     }
     else {
       (async () => {
@@ -53,23 +58,32 @@ function App () {
   }, []);
 
   useEffect(() => {
-    console.log('account', account);
+    console.log("account has changed to", account);
     if (web3.utils.isAddress(account)) {
-      getPageAddress();
+      // getPageAddress();
+      if (account.toLowerCase() === window.location.pathname.slice(1).toLowerCase()) {
+        history.push("/");
+      }
       (async () => {
         await getBalance();
       })();
+    }
+  }, [account]);
+  
+  /* useEffect(() => {
+    if (web3.utils.isAddress(account) && web3.utils.isAddress(pageAddress)) {
       (async () => {
         await getFlow();
       })();
     }
-  }, [account]);
+  }, [pageAddress]); */
 
-  useEffect(() => {
-    determineCurrentPage();
-    console.log("YO", account, pageAddress);
-  }, [account, pageAddress, connected]);
-  
+  /* useEffect(() => {
+    if (data !== undefined && data[0] !== undefined && data[0].attributes !== undefined) {
+      setPageData(data[0].attributes);
+    }
+  }, [data]); */
+
   const initWeb3 = async () => {
     const provider = await detectEthereumProvider();
     const web3 = new Web3(provider);
@@ -91,7 +105,7 @@ function App () {
       await getAccount();
     }
     else {
-      determineCurrentPage();
+      console.log("CONNECT METAMASK");
     }
   }
 
@@ -118,7 +132,7 @@ function App () {
     function handleAccountsChanged(accounts) {
       if (accounts.length === 0) {
         // connect to metamask!
-        determineCurrentPage();
+        console.log("CONNECT TO METAMASK 2");
       }
       else if (accounts[0] !== currentAccount) {
         currentAccount = accounts[0];
@@ -135,11 +149,9 @@ function App () {
     }
     else {
       console.log("CONNECTED");
+      history.push("/");
       setConnected(true);
       setAccount(accts[0]);
-      if (window.location.pathname === "/") {
-        setPageAddress(accts[0]);
-      }
     }
   }
 
@@ -158,62 +170,21 @@ function App () {
     }
   }
 
-  const getPageAddress = () => {
-    if (window.location.pathname === "/") {
-      setPageAddress(web3.utils.toChecksumAddress(account));
-    }
-    else {
-      setPageAddress(web3.utils.toChecksumAddress(window.location.pathname.slice(1)));
-    }
-  }
-  
-  const determineCurrentPage = () => {
-    console.log("determine currenct page");
+  /* const getPageAddress = () => {
     if (web3.utils.isAddress(account)) {
-      if (account !== undefined && pageAddress !== undefined &&
-        account.toLowerCase() === pageAddress.toLowerCase()) {
-        if (data !== undefined && data[0] !== undefined && data[0].attributes !== undefined) { // enter condition to ensure this page exists
-          console.log(data[0].attributes);
-          setPageExists(true);
-          setCurrentPage(PAGES.USER);
-        }
-        else {
-          setPageExists(false);
-          setCurrentPage(PAGES.NOTHING_CREATE);
-        }
+      if (window.location.pathname === "/") {
+        setPageAddress(web3.utils.toChecksumAddress(account));
       }
       else {
-        console.log(account, pageAddress);
-        setPageExists(false);
-        setCurrentPage(PAGES.NOTHING_GO);
+        setPageAddress(web3.utils.toChecksumAddress(window.location.pathname.slice(1)));
+        if (window.location.pathname.slice(1).toLowerCase() === account.toLowerCase()) {
+          history.push("/");
+        }
       }
     }
-    else if (connected === false) {
-      setPageExists(false);
-      setCurrentPage(PAGES.CONNECT);
-    }
-  }
-  
-  const modifyPage = async (username, ethAddress, bio, minSubscription) => {
-    const query = new Moralis.Query("Pages");
-    const result = await query.equalTo("ethAddress", ethAddress).first(); // f'n works!!!!
-    
-    if (result === undefined) {
-      const newPage = new Moralis.Object.extend("Pages")();
-      newPage.set("username", username);
-      newPage.set("bio", bio);
-      newPage.set("minSubscription", minSubscription);
-      await newPage.save();
-    }
-    else {
-      result.set("username", username);
-      result.set("bio", bio);
-      result.set("minSubscription", minSubscription);
-      await result.save();
-    }
-  }
+  } */
 
-  const createStream = async streamAmount => {
+  /* const createStream = async streamAmount => {
     await sf.user({
       address: account,
       token: tokens.ropsten.fDAIx
@@ -226,17 +197,15 @@ function App () {
       (async () => {
         await getFlow();
       })();
-      console.log("Alpha");
     })
     .catch(() => {
       (async () => {
         await getFlow();
       })();
-      console.log("Beta");
     })
-  }
+  } */
 
-  const getFlow = async () => {
+  /* const getFlow = async () => {
     if (account !== "" && pageAddress !== "" && account !== pageAddress) {
       await sf.cfa.getFlow({
         superToken: tokens.ropsten.fDAIx,
@@ -248,12 +217,63 @@ function App () {
         setCurrentSubscription(calculateStream(Number(result.flowRate)));
       });
     }
-  }
+  } */
 
   return (
     <div className="App">
-      <StickyHeader balance={balance} getAccount={getAccount} connected={connected} account={account} />
-      <CreatorContent 
+      <StickyHeader 
+        balance={balance} 
+        getAccount={getAccount} 
+        setAccount={setAccount}
+        connected={connected} 
+        account={account} 
+        history={history}
+        // getPageAddress={getPageAddress}        
+      />
+      <div>
+        <Card className="CreatorContent" bordered={true}>
+          <Switch>
+            <Route exact path="/">
+              <Home
+                web3={web3}
+                Moralis={Moralis}
+                account={account}
+                connected={connected}
+              />              
+            </Route>
+            <Route>
+              <Creator 
+                web3={web3}
+                account={account}
+                connected={connected}
+                history={history}
+                sf={sf}
+              />
+              {/* 
+              {connected === false ?
+              <ConnectViaMetaMask />
+              :
+              pageData === undefined ?
+              <NothingYetGo 
+                address={pageAddress}
+                getPageAddress={getPageAddress}
+                history={history}
+              />
+              :
+              <CreatedOther 
+                createStream={createStream} 
+                address={pageAddress} 
+                account={account}
+                currentSubscription={currentSubscription}
+                flowInfo={flowInfo}
+                pageData={pageData}
+              />
+              } */}
+            </Route>
+          </Switch>
+        </Card>
+      </div>
+      {/* <CreatorContent 
         createStream={createStream} 
         balance={balance} 
         address={pageAddress} 
@@ -267,7 +287,7 @@ function App () {
         getPageAddress={getPageAddress}
         modifyPage={modifyPage}
         pageData={pageData}
-      />
+      /> */}
       <SubscriptionContent unlocked={contentUnlocked} />
     </div>
   );

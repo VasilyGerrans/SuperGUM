@@ -1,6 +1,7 @@
 import React from 'react';
 import { Card } from 'antd';
 import { Spinner } from 'react-bootstrap';
+import { Switch, Route } from 'react-router-dom';
 import ConnectViaMetaMask from './subcomponents/ConnectViaMetaMask';
 import NothingYetCreate from './subcomponents/NothingYetCreate';
 import NothingYetGo from './subcomponents/NothingYetGo';
@@ -18,6 +19,13 @@ function CreatorContent(props) {
             </div>
             :
             <Card className="CreatorContent" bordered={true}>
+                <Switch>
+                    <Route path="/">
+
+                    </Route>
+                </Switch>
+
+                {/*
                 {props.currentPage === PAGES.CONNECT ?
                 <ConnectViaMetaMask /> 
                 :
@@ -52,6 +60,7 @@ function CreatorContent(props) {
                     pageData={props.pageData}
                 />                            
                 }
+                 */}
                 {/* <ExperimentalSuperfluid 
                     createStream={props.createStream} 
                     balance={props.balance} 
