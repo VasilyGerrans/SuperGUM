@@ -22,7 +22,6 @@ function CreatedUser(props) {
 
     useEffect(() => {
         if (props !== undefined) {
-            console.log("page data about to be ascribed", props);
             if (props.username !== undefined) {
                 setUsername(props.username);
                 _setUsername(props.username);
@@ -36,7 +35,7 @@ function CreatedUser(props) {
                 _setMinSubscription(props.minSubscription);
             }
         }
-    }, [props]);
+    }, [props.username, props.bio, props.minSubscription]);
 
     const reset = () => {
         setUsername("");

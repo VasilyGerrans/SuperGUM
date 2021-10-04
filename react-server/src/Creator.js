@@ -1,17 +1,20 @@
 import React, { useEffect, useState } from 'react';
 import { useMoralisQuery } from 'react-moralis';
+import SubscriptionContent from './SubscriptionContent';
 import ConnectViaMetaMask from './subcomponents/ConnectViaMetaMask';
 import NothingYetGo from './subcomponents/NothingYetGo';
 import CreatedOther from './subcomponents/CreatedOther';
 import { tokens, calculateStream } from './config';
+import { Card } from 'antd';
 
 function Creator(props) {
     const [ pageAddress, setPageAddress ] = useState("");
     const [ username, setUsername ] = useState("");
     const [ bio, setBio ] = useState("");
-    const [ minSubscription, setMinSubscription ] = useState(0);
     const [ flowInfo, setFlowInfo ] = useState({});
+    const [ minSubscription, setMinSubscription ] = useState(0);
     const [ currentSubscription, setCurrentSubscription ] = useState(0);
+    const [ contentUnlocked, setContentUnlocked ] = useState(false);
 
     const { data } = useMoralisQuery("Pages", query => { 
         if (props.web3.utils.isAddress(pageAddress) === true) {
@@ -44,6 +47,16 @@ function Creator(props) {
             })();
         }
     }, [props.account, pageAddress]);
+
+    useEffect(() => {
+        if (minSubscription === 0 ||
+            currentSubscription >= minSubscription) {
+            setContentUnlocked(true);
+        }
+        else {
+            setContentUnlocked(false);
+        }
+    }, [minSubscription, currentSubscription]);
 
     const getFlow = async () => {
         await props.sf.cfa.getFlow({
@@ -83,23 +96,31 @@ function Creator(props) {
 
     return (
         <div>
-            {props.connected === false ?
-            <ConnectViaMetaMask />
-            :
-            username === "" ?
-            <NothingYetGo 
-                address={pageAddress}
-                history={props.history}
+            <Card className="CreatorContent" bordered={true}>
+                {props.connected === false ?
+                <ConnectViaMetaMask />
+                :
+                username === "" ?
+                <NothingYetGo 
+                    address={pageAddress}
+                    history={props.history}
+                />
+                :
+                <CreatedOther 
+                    createStream={createStream} 
+                    address={pageAddress} 
+                    currentSubscription={currentSubscription}
+                    flowInfo={flowInfo}
+                    username={username}
+                    bio={bio}
+                />
+                }
+            </Card>
+            {contentUnlocked === true ?
+            <SubscriptionContent 
             />
             :
-            <CreatedOther 
-                createStream={createStream} 
-                address={pageAddress} 
-                currentSubscription={currentSubscription}
-                flowInfo={flowInfo}
-                username={username}
-                bio={bio}
-            />
+            <></>
             }
         </div>
     )

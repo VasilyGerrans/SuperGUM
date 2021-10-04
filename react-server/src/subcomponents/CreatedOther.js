@@ -10,9 +10,10 @@ function CreatedOther(props) {
 
     const [ editMode, setEditMode ] = useState(false);
     const [ subscriptionNumber, setSubscriptionNumber ] = useState(0);
+    const [ _subscriptionNumber, _setSubscriptionNumber ] = useState(0);
     const [ processingSF, setProcessingSF ] = useState(false);
-    const [ _minSubscription, _setMinSubscription ] = useState(5.00);
     const [ minSubscription, setMinSubscription ] = useState(0);
+    const [ _minSubscription, _setMinSubscription ] = useState(5.00);
     const [ warningMsg, setWarningMsg ] = useState("");
 
     useEffect(() => {
@@ -20,6 +21,10 @@ function CreatedOther(props) {
         props.flowInfo.timestamp !== undefined &&
         props.flowInfo.flowRate !== undefined) {
             setBalance(BigNumber(((Date.now() - props.flowInfo.timestamp) * Number(props.flowInfo.flowRate)) / 1000).shiftedBy(-18).toFixed(8).toString());
+        }
+
+        if (props.currentSubscription !== undefined) {
+            
         }
     }, []);
 
@@ -38,6 +43,7 @@ function CreatedOther(props) {
     useEffect(() => {
         if (props.currentSubscription > 0) {
             setSubscriptionNumber(props.currentSubscription);
+            _setSubscriptionNumber(props.currentSubscription);
             setPerSecond(BigNumber(calculateFlowRate(BigNumber(props.currentSubscription)
             .shiftedBy(18))));
         }
@@ -62,6 +68,13 @@ function CreatedOther(props) {
                 }
                 else {
                     setPerSecond(0);
+                }
+
+                if (num < _minSubscription && warningMsg === "") {
+                    setWarningMsg(`Warning: You have specified a subscription amount less than the creator's minimum (${_minSubscription.toFixed(2).toString()} DAIx/month). You will not gain access to subscription content.`);
+                }
+                else if (num >= _minSubscription) {
+                    setWarningMsg("");
                 }
             } 
         }
@@ -119,7 +132,7 @@ function CreatedOther(props) {
                         </div>
                         :
                         <div>
-                            Current subscription: <b><input type="number" step="0.01" placeholder={props.currentSubscription} value={subscriptionNumber} onChange={onChange} /> DAIx/month</b>
+                            Current subscription: <b><input type="number" step="0.01" placeholder={_subscriptionNumber} value={subscriptionNumber} onChange={onChange} /> DAIx/month</b>
                         </div>
                         } 
                     </div>

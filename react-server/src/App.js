@@ -2,23 +2,20 @@ import { useState, useEffect } from 'react';
 import { useMoralis } from 'react-moralis';
 import { Switch, Route } from 'react-router-dom';
 import { useHistory } from 'react-router';
-import { Card } from 'antd';
 import Web3 from 'web3';
+import { Spinner } from 'react-bootstrap';
 import detectEthereumProvider from '@metamask/detect-provider';
 import SuperFluidSDK from '@superfluid-finance/js-sdk';
 import StickyHeader from './StickyHeader';
-import SubscriptionContent from './SubscriptionContent';
-import Home from './Home';
-import { Spinner } from 'react-bootstrap';
 import { ERC20abi } from './abis/ERC20abi';
 import { fDAIxabi } from './abis/fDAIxabi';
 import { tokens } from './config';
-import './App.css';
+import Home from './Home';
 import Creator from './Creator';
+import './App.css';
 
 function App () {
   const { web3, Moralis } = useMoralis();
-  const [ contentUnlocked, setContentUnlocked ] = useState(true);
   const [ sf, setSf ] = useState({});
   const [ connected, setConnected ] = useState(true);
   const [ account, setAccount ] = useState(""); // belonging to the client
@@ -145,32 +142,28 @@ function App () {
         connected={connected} 
         account={account} 
         history={history}
-        // getPageAddress={getPageAddress}        
       />
       <div>
-        <Card className="CreatorContent" bordered={true}>
-          <Switch>
-            <Route exact path="/">
-              <Home
-                web3={web3}
-                Moralis={Moralis}
-                account={account}
-                connected={connected}
-              />              
-            </Route>
-            <Route>
-              <Creator 
-                web3={web3}
-                account={account}
-                connected={connected}
-                history={history}
-                sf={sf}
-              />              
-            </Route>
-          </Switch>
-        </Card>
+        <Switch>
+          <Route exact path="/">
+            <Home
+              web3={web3}
+              Moralis={Moralis}
+              account={account}
+              connected={connected}
+            />              
+          </Route>
+          <Route>
+            <Creator 
+              web3={web3}
+              account={account}
+              connected={connected}
+              history={history}
+              sf={sf}
+            />              
+          </Route>
+        </Switch>
       </div>
-      <SubscriptionContent unlocked={contentUnlocked} />
     </div>
   );
 }

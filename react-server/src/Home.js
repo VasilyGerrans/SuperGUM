@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useMoralisQuery } from 'react-moralis';
 import { Spinner } from 'react-bootstrap';
+import { Card, Button } from 'antd';
 import ConnectViaMetaMask from './subcomponents/ConnectViaMetaMask';
 import NothingYetCreate from './subcomponents/NothingYetCreate';
 import CreatingUser from './subcomponents/CreatingUser';
 import CreatedUser from './subcomponents/CreatedUser';
+import EditPost from './subcomponents/EditPost';
+import Post from './subcomponents/Post';
 
 function Home(props) {
     const [ pageAddress, setPageAddress ] = useState("");
@@ -12,10 +15,18 @@ function Home(props) {
     const [ username, setUsername ] = useState("");
     const [ bio, setBio ] = useState("");
     const [ minSubscription, setMinSubscription ] = useState(0);
+    const [ contentCreationMode, setContentCreationMode ] = useState(false);
+    const [ pageContent, setPageContent ] = useState([]);
 
     const { data } = useMoralisQuery("Pages", query => { 
         if (props.web3.utils.isAddress(pageAddress) === true) {
             return query.equalTo("ethAddress", props.web3.utils.toChecksumAddress(pageAddress)); 
+        }
+    }, [pageAddress]);
+
+    const { data: content } = useMoralisQuery("Content", query => {
+        if (props.web3.utils.isAddress(pageAddress) === true) {
+            return query.equalTo("ethAddress", props.web3.utils.toChecksumAddress(pageAddress));
         }
     }, [pageAddress]);
 
@@ -24,6 +35,10 @@ function Home(props) {
             setPageAddress(props.web3.utils.toChecksumAddress(props.account));
         }
     }, []);
+
+    useEffect(() => {
+        setPageContent(content);
+    }, [content]);
 
     useEffect(() => {
         if (props.web3.utils.isAddress(props.account)) {
@@ -44,11 +59,14 @@ function Home(props) {
         }
     }, [data]);
 
+    useEffect(() => {
+        console.log("PAGE CONTENT", pageContent);
+    }, [pageContent]);
+
     const bioCharacterLimit = 300;
     const usernameCharacterLimit = 40;
 
     const createPage = async (username, ethAddress, bio, minSubscription) => {
-        console.log(username, ethAddress, bio, minSubscription);
         if (username !== undefined && 
             username.length > 0 &&
             username.length <= usernameCharacterLimit && 
@@ -68,11 +86,11 @@ function Home(props) {
 
     const modifyPage = async (username, ethAddress, bio, minSubscription) => {
         const query = new props.Moralis.Query("Pages");
-        const result = await query.equalTo("ethAddress", ethAddress).first(); // f'n works!!!!
+        const result = await query.equalTo("ethAddress", ethAddress).first();
         
         if (result === undefined) {
             let Pages = props.Moralis.Object.extend("Pages");
-            const newPage = new Pages(); // fails at this point for some reasn
+            const newPage = new Pages();
             newPage.set("username", username);
             newPage.set("bio", bio);
             newPage.set("minSubscription", minSubscription);
@@ -87,43 +105,124 @@ function Home(props) {
         }
     }
 
+    const createContent = async (text) => {
+        if (props.web3.utils.isAddress(pageAddress) && text.trim().length > 0) {
+            await modifyContent(text, pageAddress)
+            .then(createdContent => {
+                setPageContent([createdContent, ...pageContent]);
+            })
+            .catch(e => {
+                console.error(e);
+            });
+        }
+    }
+
+    const deleteContent = async objectId => {
+        const query = new props.Moralis.Query("Content");
+        const result = await query.equalTo("objectId", objectId).first();
+
+        if (result !== undefined) {
+            result.destroy().then(() => {
+                const c = pageContent.filter(entry => entry.id !== objectId);
+                setPageContent([...c]);
+            }, error => {
+                console.error(error);
+            });
+        }
+    }
+
+    const modifyContent = async (text, objectId = "") => {
+        if (objectId.length === 0) {
+            let ContentClass = props.Moralis.Object.extend("Content");
+            const newContent = new ContentClass();
+            newContent.set("ethAddress", pageAddress);
+            newContent.set("content", text);
+            await newContent.save();
+            return newContent;
+        }
+        else {
+            const query = new props.Moralis.Query("Content");
+            const result = await query.equalTo("objectId", objectId).first();
+            if (result === undefined) {
+                let ContentClass = props.Moralis.Object.extend("Content");
+                const newContent = new ContentClass();
+                newContent.set("ethAddress", pageAddress);
+                newContent.set("content", text);
+                await newContent.save();
+                return newContent;
+            }
+            else {
+                result.set("content", text);
+                await result.save();
+                return result;
+            }
+        }
+    }
+
     return (
         <div>
-            {/* props.pageLoading === true ?
-            <Spinner animation="border" role="status">
-            </Spinner>
-            : */
-            props.connected === false ?
-            <ConnectViaMetaMask />
+            <Card className="CreatorContent" bordered={true}>
+                {/* props.pageLoading === true ?
+                <Spinner animation="border" role="status">
+                </Spinner>
+                : */
+                props.connected === false ?
+                <ConnectViaMetaMask />
+                :
+                username === "" &&
+                pageCreationMode === false ?
+                <NothingYetCreate 
+                    address={pageAddress}
+                    setPageCreationMode={setPageCreationMode}
+                />
+                :
+                username === "" ?
+                <CreatingUser
+                    address={pageAddress}
+                    setPageCreationMode={setPageCreationMode}
+                    createPage={createPage}
+                    usernameCharacterLimit={usernameCharacterLimit}
+                    bioCharacterLimit={bioCharacterLimit}
+                />
+                :
+                <CreatedUser 
+                    address={pageAddress}
+                    modifyPage={modifyPage}
+                    username={username}
+                    bio={bio}
+                    minSubscription={minSubscription}
+                    pageCreationMode={pageCreationMode}
+                    setPageCreationMode={setPageCreationMode}
+                    usernameCharacterLimit={usernameCharacterLimit}
+                    bioCharacterLimit={bioCharacterLimit}
+                />
+                }
+            </Card>
+            {username === "" ?
+            <div>
+            </div>
             :
-            username === "" &&
-            pageCreationMode === false ?
-            <NothingYetCreate 
-                address={pageAddress}
-                setPageCreationMode={setPageCreationMode}
-            />
+            contentCreationMode === false ?
+            <Button onClick={() => {setContentCreationMode(true)}} style={{
+                margin: "30px"
+            }}>
+                Create content
+            </Button>
             :
-            username === "" ?
-            <CreatingUser
-                address={pageAddress}
-                setPageCreationMode={setPageCreationMode}
-                createPage={createPage}
-                usernameCharacterLimit={usernameCharacterLimit}
-                bioCharacterLimit={bioCharacterLimit}
-            />
-            :
-            <CreatedUser 
-                address={pageAddress}
-                modifyPage={modifyPage}
-                username={username}
-                bio={bio}
-                minSubscription={minSubscription}
-                pageCreationMode={pageCreationMode}
-                setPageCreationMode={setPageCreationMode}
-                usernameCharacterLimit={usernameCharacterLimit}
-                bioCharacterLimit={bioCharacterLimit}
-            />
+            <EditPost
+                setContentCreationMode={setContentCreationMode}
+                createContent={createContent}
+            />            
             }
+            {pageContent.map(c => { 
+                return (
+                <Post 
+                    key={c.id} 
+                    contentKey={c.id} 
+                    content={c.attributes.content} 
+                    deleteContent={deleteContent} 
+                />)
+            })}
         </div>
     )
 }
