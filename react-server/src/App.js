@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useMoralis, useMoralisQuery } from 'react-moralis';
+import { useMoralis } from 'react-moralis';
 import { Switch, Route } from 'react-router-dom';
 import { useHistory } from 'react-router';
 import { Card } from 'antd';
@@ -9,12 +9,6 @@ import SuperFluidSDK from '@superfluid-finance/js-sdk';
 import StickyHeader from './StickyHeader';
 import SubscriptionContent from './SubscriptionContent';
 import Home from './Home';
-import ConnectViaMetaMask from './subcomponents/ConnectViaMetaMask';
-import NothingYetCreate from './subcomponents/NothingYetCreate';
-import NothingYetGo from './subcomponents/NothingYetGo';
-import CreatedOther from './subcomponents/CreatedOther';
-import CreatingUser from './subcomponents/CreatingUser';
-import CreatedUser from './subcomponents/CreatedUser';
 import { Spinner } from 'react-bootstrap';
 import { ERC20abi } from './abis/ERC20abi';
 import { fDAIxabi } from './abis/fDAIxabi';
@@ -31,19 +25,8 @@ function App () {
   const [ fDAI, setfDAI ] = useState({});
   const [ fDAIx, setfDAIx ] = useState({});
   const [ balance, setBalance ] = useState(0);
-  // , setPageAddress ] = useState(""); // belonging to the page
-  // const [ currentSubscription, setCurrentSubscription ] = useState(0);
-  // const [ flowInfo, setFlowInfo ] = useState({});
-  const [ pageData, setPageData ] = useState(undefined);
-  const [ pageLoading, setPageLoading ] = useState(true);
 
   const history = useHistory();
-  
-  /* const { data } = useMoralisQuery("Pages", query => { 
-    if (web3.utils.isAddress(pageAddress) === true) {
-      return query.equalTo("ethAddress", web3.utils.toChecksumAddress(pageAddress)); 
-    }
-  }, [pageAddress]); */
 
   useEffect(() => {
     const path = window.location.pathname.slice(1);
@@ -60,7 +43,6 @@ function App () {
   useEffect(() => {
     console.log("account has changed to", account);
     if (web3.utils.isAddress(account)) {
-      // getPageAddress();
       if (account.toLowerCase() === window.location.pathname.slice(1).toLowerCase()) {
         history.push("/");
       }
@@ -69,20 +51,6 @@ function App () {
       })();
     }
   }, [account]);
-  
-  /* useEffect(() => {
-    if (web3.utils.isAddress(account) && web3.utils.isAddress(pageAddress)) {
-      (async () => {
-        await getFlow();
-      })();
-    }
-  }, [pageAddress]); */
-
-  /* useEffect(() => {
-    if (data !== undefined && data[0] !== undefined && data[0].attributes !== undefined) {
-      setPageData(data[0].attributes);
-    }
-  }, [data]); */
 
   const initWeb3 = async () => {
     const provider = await detectEthereumProvider();
@@ -110,7 +78,6 @@ function App () {
   }
 
   const getAccount = async () => {
-    console.log("GET ACCOUNT CALLED");
     const acct = await window.ethereum.request({method: 'eth_accounts'});
     if (acct.length > 0) {
       setConnected(true);
@@ -131,8 +98,7 @@ function App () {
 
     function handleAccountsChanged(accounts) {
       if (accounts.length === 0) {
-        // connect to metamask!
-        console.log("CONNECT TO METAMASK 2");
+        console.log("CONNECT TO METAMASK");
       }
       else if (accounts[0] !== currentAccount) {
         currentAccount = accounts[0];
@@ -170,55 +136,6 @@ function App () {
     }
   }
 
-  /* const getPageAddress = () => {
-    if (web3.utils.isAddress(account)) {
-      if (window.location.pathname === "/") {
-        setPageAddress(web3.utils.toChecksumAddress(account));
-      }
-      else {
-        setPageAddress(web3.utils.toChecksumAddress(window.location.pathname.slice(1)));
-        if (window.location.pathname.slice(1).toLowerCase() === account.toLowerCase()) {
-          history.push("/");
-        }
-      }
-    }
-  } */
-
-  /* const createStream = async streamAmount => {
-    await sf.user({
-      address: account,
-      token: tokens.ropsten.fDAIx
-    })
-    .flow({
-      recipient: pageAddress,
-      flowRate: streamAmount.toString()
-    })
-    .then(() => {
-      (async () => {
-        await getFlow();
-      })();
-    })
-    .catch(() => {
-      (async () => {
-        await getFlow();
-      })();
-    })
-  } */
-
-  /* const getFlow = async () => {
-    if (account !== "" && pageAddress !== "" && account !== pageAddress) {
-      await sf.cfa.getFlow({
-        superToken: tokens.ropsten.fDAIx,
-        sender: account,
-        receiver: pageAddress
-      })
-      .then(result => {
-        setFlowInfo(result);
-        setCurrentSubscription(calculateStream(Number(result.flowRate)));
-      });
-    }
-  } */
-
   return (
     <div className="App">
       <StickyHeader 
@@ -248,46 +165,11 @@ function App () {
                 connected={connected}
                 history={history}
                 sf={sf}
-              />
-              {/* 
-              {connected === false ?
-              <ConnectViaMetaMask />
-              :
-              pageData === undefined ?
-              <NothingYetGo 
-                address={pageAddress}
-                getPageAddress={getPageAddress}
-                history={history}
-              />
-              :
-              <CreatedOther 
-                createStream={createStream} 
-                address={pageAddress} 
-                account={account}
-                currentSubscription={currentSubscription}
-                flowInfo={flowInfo}
-                pageData={pageData}
-              />
-              } */}
+              />              
             </Route>
           </Switch>
         </Card>
       </div>
-      {/* <CreatorContent 
-        createStream={createStream} 
-        balance={balance} 
-        address={pageAddress} 
-        account={account} 
-        currentSubscription={currentSubscription}
-        flowInfo={flowInfo}
-        currentPage={currentPage}
-        setCurrentPage={setCurrentPage}
-        pageExists={pageExists}
-        determineCurrentPage={determineCurrentPage}
-        getPageAddress={getPageAddress}
-        modifyPage={modifyPage}
-        pageData={pageData}
-      /> */}
       <SubscriptionContent unlocked={contentUnlocked} />
     </div>
   );
