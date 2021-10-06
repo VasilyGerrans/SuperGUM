@@ -8,7 +8,8 @@ function NothingYetGo(props) {
         <div>
             <h1><b>There is no page here yet</b></h1>
             <AddressDisplay 
-                address={props.address}
+                address={props.address}  
+                justifyCenter={true}              
             />
             <p>
                 <img src={EmptyBox} alt="" height="200" />
