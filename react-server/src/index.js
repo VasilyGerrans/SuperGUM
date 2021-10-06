@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import { BrowserRouter } from 'react-router-dom';
 import App from './App';
 import { MoralisProvider } from 'react-moralis';
-import { moralisLoginData } from './config';
+import { moralisLoginData } from './private.js';
 
 ReactDOM.render(
   <MoralisProvider 

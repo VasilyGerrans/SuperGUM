@@ -1,15 +1,5 @@
 import BigNumber from "bignumber.js";
 
-export const moralisLoginData = {
-    adykor: {
-        appId: "WaGujmZNMBTckf7xuyLhYcbDQxiI18HE95P7jOV5",
-        serverUrl: "https://yksyrtftymzt.grandmoralis.com:2053/server"
-    },
-    gerrans: {
-        appId: "vYFaaDHxicaTLpCR67w7IKRT2dWtO8g029F9jn9a",
-        serverUrl: "https://moiomrs3w5gm.grandmoralis.com:2053/server"
-    }
-}
 export const tokens = {
     ropsten: {
         fDAI: "0x15F0Ca26781C3852f8166eD2ebce5D18265cceb7",
