@@ -3,7 +3,6 @@ import { Card, Button } from 'antd';
 
 function Post(props) {
     const parseDate = createdAt => {
-        // "8:45 • Oct 5, 2021"
         if (createdAt === undefined) {
             return "";
         }

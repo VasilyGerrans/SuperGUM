@@ -7,6 +7,7 @@ import NothingYetGo from './subcomponents/NothingYetGo';
 import CreatedOther from './subcomponents/CreatedOther';
 import { tokens, calculateStream } from './config';
 import { Card } from 'antd';
+import { Spinner } from 'react-bootstrap';
 
 function Creator(props) {
     const [ pageAddress, setPageAddress ] = useState("");
@@ -17,6 +18,7 @@ function Creator(props) {
     const [ currentSubscription, setCurrentSubscription ] = useState(0);
     const [ contentUnlocked, setContentUnlocked ] = useState(false);
     const [ pageContent, setPageContent ] = useState([]);
+    const [ pageLoading, setPageLoading ] = useState(true);
 
     const { data } = useMoralisQuery("Pages", query => { 
         if (props.web3.utils.isAddress(pageAddress) === true) {
@@ -44,6 +46,9 @@ function Creator(props) {
             setUsername("");
             setBio("");
             setMinSubscription(0);
+        }
+        if (pageLoading === true && props.web3.utils.isAddress(pageAddress)) {
+            setPageLoading(false);
         }
     }, [data]);
 
@@ -113,7 +118,11 @@ function Creator(props) {
     return (
         <div>
             <Card className="CreatorContent" bordered={true}>
-                {props.connected === false ?
+                {pageLoading === true ?
+                <Spinner animation="border" role="status">
+                </Spinner>
+                :
+                props.connected === false ?
                 <ConnectViaMetaMask />
                 :
                 username === "" ?

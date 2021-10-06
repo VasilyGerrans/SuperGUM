@@ -17,6 +17,7 @@ function Home(props) {
     const [ minSubscription, setMinSubscription ] = useState(0);
     const [ contentCreationMode, setContentCreationMode ] = useState(false);
     const [ pageContent, setPageContent ] = useState([]);
+    const [ pageLoading, setPageLoading ] = useState(true);
 
     const { data } = useMoralisQuery("Pages", query => { 
         if (props.web3.utils.isAddress(pageAddress) === true) {
@@ -38,7 +39,6 @@ function Home(props) {
 
     useEffect(() => {
         setPageContent(content);
-        console.log(content);
     }, [content]);
 
     useEffect(() => {
@@ -58,11 +58,10 @@ function Home(props) {
             setBio("");
             setMinSubscription(0);
         }
+        if (pageLoading === true && props.web3.utils.isAddress(pageAddress)) {
+            setPageLoading(false);
+        }
     }, [data]);
-
-    /* useEffect(() => {
-        console.log("PAGE CONTENT", pageContent);
-    }, [pageContent]); */
 
     const bioCharacterLimit = 300;
     const usernameCharacterLimit = 40;
@@ -163,10 +162,10 @@ function Home(props) {
     return (
         <div>
             <Card className="CreatorContent" bordered={true}>
-                {/* props.pageLoading === true ?
+                {pageLoading === true ?
                 <Spinner animation="border" role="status">
                 </Spinner>
-                : */
+                :
                 props.connected === false ?
                 <ConnectViaMetaMask />
                 :
