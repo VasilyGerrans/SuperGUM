@@ -74,10 +74,6 @@ function Creator(props) {
         setPageContent(content);
     }, [content]);
 
-    useEffect(() => {
-        console.log("Content unlocked info", contentUnlocked, "");
-    }, [contentUnlocked]);
-
     const getFlow = async () => {
         await props.sf.cfa.getFlow({
             superToken: tokens.ropsten.fDAIx,

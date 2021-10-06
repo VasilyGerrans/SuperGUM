@@ -29,11 +29,11 @@ function StickyHeader(props) {
                 </Navbar.Brand>
                 {(props.balance > 0) ? 
                 <NavbarCollapse className="justify-content-end" style={{"display" : "none !important"}}>
-                    DAIx balance: 
-                    &nbsp;
                     <a href="https://app.superfluid.finance/dashboard" target="_blank" rel="noreferrer">
-                        {BigNumber(props.balance).shiftedBy(-18).toFixed(3).toString()}
-                    </a>
+                        Balance
+                    </a>                    
+                    :&nbsp;
+                    {BigNumber(props.balance).shiftedBy(-18).toFixed(3).toString()} DAIx
                 </NavbarCollapse>
                 :
                 <NavbarCollapse className="justify-content-end" style={{"display" : "none !important"}}>

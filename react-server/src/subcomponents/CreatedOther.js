@@ -23,10 +23,6 @@ function CreatedOther(props) {
         props.flowInfo.flowRate !== undefined) {
             setBalance(BigNumber(((Date.now() - props.flowInfo.timestamp) * Number(props.flowInfo.flowRate)) / 1000).shiftedBy(-18).toFixed(8).toString());
         }
-
-        if (props.currentSubscription !== undefined) {
-            
-        }
     }, []);
 
     useEffect(() => {
