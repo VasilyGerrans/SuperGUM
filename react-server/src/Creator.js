@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useMoralisQuery } from 'react-moralis';
 import SubscriptionContent from './SubscriptionContent';
 import ConnectViaMetaMask from './subcomponents/ConnectViaMetaMask';
+import Post from './subcomponents/Post';
 import NothingYetGo from './subcomponents/NothingYetGo';
 import CreatedOther from './subcomponents/CreatedOther';
 import { tokens, calculateStream } from './config';
@@ -15,10 +16,17 @@ function Creator(props) {
     const [ minSubscription, setMinSubscription ] = useState(0);
     const [ currentSubscription, setCurrentSubscription ] = useState(0);
     const [ contentUnlocked, setContentUnlocked ] = useState(false);
+    const [ pageContent, setPageContent ] = useState([]);
 
     const { data } = useMoralisQuery("Pages", query => { 
         if (props.web3.utils.isAddress(pageAddress) === true) {
             return query.equalTo("ethAddress", props.web3.utils.toChecksumAddress(pageAddress)); 
+        }
+    }, [pageAddress]);
+
+    const { data: content } = useMoralisQuery("Content", query => {
+        if (props.web3.utils.isAddress(pageAddress) === true) {
+            return query.equalTo("ethAddress", props.web3.utils.toChecksumAddress(pageAddress));
         }
     }, [pageAddress]);
 
@@ -57,6 +65,14 @@ function Creator(props) {
             setContentUnlocked(false);
         }
     }, [minSubscription, currentSubscription]);
+
+    useEffect(() => {
+        setPageContent(content);
+    }, [content]);
+
+    useEffect(() => {
+        console.log("Content unlocked info", contentUnlocked, "");
+    }, [contentUnlocked]);
 
     const getFlow = async () => {
         await props.sf.cfa.getFlow({
@@ -116,11 +132,20 @@ function Creator(props) {
                 />
                 }
             </Card>
-            {contentUnlocked === true ?
-            <SubscriptionContent 
-            />
+            {username === "" || contentUnlocked === false ?
+            <div></div>
             :
-            <></>
+            <div>                
+                {pageContent.map(c => { 
+                    return (
+                    <Post 
+                        key={c.id} 
+                        contentKey={c.id} 
+                        content={c.attributes.content} 
+                        createdAt={c.createdAt}
+                    />)
+                })}
+            </div>
             }
         </div>
     )

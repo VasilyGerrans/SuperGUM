@@ -38,6 +38,7 @@ function Home(props) {
 
     useEffect(() => {
         setPageContent(content);
+        console.log(content);
     }, [content]);
 
     useEffect(() => {
@@ -59,9 +60,9 @@ function Home(props) {
         }
     }, [data]);
 
-    useEffect(() => {
+    /* useEffect(() => {
         console.log("PAGE CONTENT", pageContent);
-    }, [pageContent]);
+    }, [pageContent]); */
 
     const bioCharacterLimit = 300;
     const usernameCharacterLimit = 40;
@@ -221,6 +222,7 @@ function Home(props) {
                     contentKey={c.id} 
                     content={c.attributes.content} 
                     deleteContent={deleteContent} 
+                    createdAt={c.createdAt}
                 />)
             })}
         </div>

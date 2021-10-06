@@ -152,7 +152,6 @@ function CreatedUser(props) {
                         <textarea 
                             onChange={onBioChange} 
                             value={bio} 
-                            rows="3"
                             style={{
                                 margin: "0px", 
                                 padding: "0px"

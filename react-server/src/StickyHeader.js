@@ -3,6 +3,7 @@ import { Navbar } from 'react-bootstrap';
 import { Button } from 'antd';
 import NavbarCollapse from 'react-bootstrap/esm/NavbarCollapse';
 import BigNumber from 'bignumber.js';
+import Logo from './images/logo.png';
 
 function StickyHeader(props) {
     const enableWallet = async () => {
@@ -15,8 +16,14 @@ function StickyHeader(props) {
     return (
         <div className="StickyHeader">
             <Navbar>
-                <Navbar.Brand className="brand">
-                    <h2>
+                <Navbar.Brand className="brand" style={{
+                    display: "inline-flex",
+                    alignItems: "center"
+                }}>
+                    <img src={Logo} alt="" height="50" />
+                    <h2 style={{
+                        margin: "0px"
+                    }}>
                         SuperGUM
                     </h2>
                 </Navbar.Brand>

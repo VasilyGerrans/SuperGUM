@@ -1,44 +1,64 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Card, Button } from 'antd';
 
 function Post(props) {
-    const [ warningMsg, setWarningMsg ] = useState("");
-    const [ dateCreated , setDateCreated ] = useState("19:52 • Oct 4, 2021");
+    const parseDate = createdAt => {
+        // "8:45 • Oct 5, 2021"
+        if (createdAt === undefined) {
+            return "";
+        }
+        else {
+            let meridiem = Number(createdAt.getHours()) / 12 < 1 ? "AM" : "PM";
+            let hour = Number(createdAt.getHours()) % 12;
+            if (hour === 0) hour = 12;
+            let month = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"][Number(createdAt.getMonth())];
+            return `${hour}:${createdAt.getMinutes()} ${meridiem} • ${month} ${createdAt.getDate()}, ${createdAt.getFullYear()}`;
+        }
+    }
 
     return (
         <Card className="SubscriptionContent" style={{
             padding: "0px",
-            display: "grid",
-            gridTemplateRows: "auto auto 10px",
             minHeight: "100px"
         }}>
             <div style={{
-                margin: "0px", 
-                padding: "30px 10px 10px",
-                width: "100%",
-                border: "0px",
-            }}>
-                {props.content}
-            </div>
-            <hr />
-            <div style={{
-                display: "flex",
-                justifyContent: "space-between",
-                padding: "5px",
-                alignItems: "center"
+                display: "grid",
+                gridTemplateRows: "auto auto 50px"
             }}>
                 <div style={{
-                    color: "grey",
-                    margin: "2px"
+                    margin: "20px", 
+                    border: "0px",
+                    fontSize: "20px"
                 }}>
-                    {dateCreated}
+                    {props.content}
                 </div>
-                <div>
-                    <Button className="cancel-button" onClick={() => {
-                        props.deleteContent(props.contentKey);
+                <hr style={{margin: "0"}} />
+                <div style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    padding: "5px",
+                    alignItems: "center"
+                }}>
+                    <div style={{
+                        color: "grey",
+                        marginLeft: "14px"
                     }}>
-                        Delete
-                    </Button>
+                        {parseDate(props.createdAt)}
+                    </div>
+                    <div>
+                        {props.deleteContent === undefined ?
+                        <div>
+                        </div>
+                        :
+                        <Button className="cancel-button" style={{
+
+                        }} onClick={() => {
+                            props.deleteContent(props.contentKey);
+                        }}>
+                            Delete
+                        </Button>
+                        }
+                    </div>
                 </div>
             </div>
         </Card>
