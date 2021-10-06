@@ -27,7 +27,7 @@ function Home(props) {
 
     const { data: content } = useMoralisQuery("Content", query => {
         if (props.web3.utils.isAddress(pageAddress) === true) {
-            return query.equalTo("ethAddress", props.web3.utils.toChecksumAddress(pageAddress));
+            return query.equalTo("ethAddress", props.web3.utils.toChecksumAddress(pageAddress)).descending("createdAt");
         }
     }, [pageAddress]);
 

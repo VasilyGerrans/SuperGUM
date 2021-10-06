@@ -58,6 +58,7 @@ function EditPost(props) {
                     }
                 </div>
                 <div>
+                    {/* 
                     <input type="file" id="selectedFile" style={{display: "none"}} 
                         onChange={onFileChange}
                     />
@@ -78,21 +79,28 @@ function EditPost(props) {
                         onClick={() => {
                             document.getElementById("selectedFile").click()
                         }} 
-                    />
+                    /> */}
                     <Button className="cancel-button" onClick={() => {
                         props.setContentCreationMode(false);
                     }}>
                         Cancel
                     </Button>
                     <Button className="confirm-button" onClick={() => {
-                        if (text.trim() === "") {
+                        if (text.trim() === "" && warningMsg === "") {
+                            setWarningMsg("Error: please enter some content before publishing.");
+                            /* 
                             if (selectedFile === null) {
                                 setWarningMsg("Error: please enter some content before publishing.");
                             }
                             else {
                                 if (["image/png", "image/jpeg", "image/gif", "video/mp4", "audio/mpeg"].includes(selectedFile.type)) {
                                     if (selectedFile.size < 5242880) {
-                                        console.log("READY TO SEND");
+                                        console.log(selectedFile);
+                                        saveFile(selectedFile.name, selectedFile, { 
+                                            type: selectedFile.type,
+                                            saveIPFS: true 
+                                        });
+                                        props.setContentCreationMode(false);
                                     }
                                     else {
                                         setWarningMsg("Error: only files under 5MB allowed.");
@@ -101,7 +109,7 @@ function EditPost(props) {
                                 else {
                                     setWarningMsg("Error: the only supported formats are png, jpeg, gif, mp3 and mp4.");
                                 }
-                            }
+                            } */
                         }
                         else {
                             props.createContent(text.trim());
