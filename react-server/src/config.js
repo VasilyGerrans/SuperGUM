@@ -4,6 +4,10 @@ export const tokens = {
     ropsten: {
         fDAI: "0x15F0Ca26781C3852f8166eD2ebce5D18265cceb7",
         fDAIx: "0xBF6201a6c48B56d8577eDD079b84716BB4918E8A"
+    },
+    rinkeby: {
+        fDAI: "0x15F0Ca26781C3852f8166eD2ebce5D18265cceb7",
+        fDAIx: "0x745861AeD1EEe363b4AaA5F1994Be40b1e05Ff90"
     }
 }
 export function calculateFlowRate(amount) {

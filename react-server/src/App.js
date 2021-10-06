@@ -58,10 +58,12 @@ function App () {
         web3: web3
       });
 
+      console.log(web3);
+
       await sf.initialize();
 
-      const fDAI = new web3.eth.Contract(ERC20abi, tokens.ropsten.fDAI);
-      const fDAIx = new web3.eth.Contract(fDAIxabi, tokens.ropsten.fDAIx);
+      const fDAI = new web3.eth.Contract(ERC20abi, tokens.rinkeby.fDAI);
+      const fDAIx = new web3.eth.Contract(fDAIxabi, tokens.rinkeby.fDAIx);
 
       setfDAI(fDAI);
       setfDAIx(fDAIx);

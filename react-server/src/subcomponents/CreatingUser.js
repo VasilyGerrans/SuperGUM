@@ -139,7 +139,7 @@ function CreatingUser(props) {
                     setWarningMsg(`Error: Bio must be below ${props.bioCharacterLimit} characters.`);
                 }
                 else {
-                    (async () => props.createPage(username, props.address, bio, minSubscription))();
+                    (async () => props.createPage(username, props.address, bio, Number(minSubscription)))();
                 }
             }}>
                 Create

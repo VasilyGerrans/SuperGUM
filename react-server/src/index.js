@@ -7,8 +7,8 @@ import { moralisLoginData } from './private.js';
 
 ReactDOM.render(
   <MoralisProvider 
-    appId={moralisLoginData.gerrans.appId} 
-    serverUrl={moralisLoginData.gerrans.serverUrl}
+    appId={moralisLoginData.rinkeby.appId} 
+    serverUrl={moralisLoginData.rinkeby.serverUrl}
   >
     <React.StrictMode>
       <BrowserRouter>

@@ -14,7 +14,7 @@ function CreatedOther(props) {
     const [ _subscriptionNumber, _setSubscriptionNumber ] = useState(0);
     const [ processingSF, setProcessingSF ] = useState(false);
     const [ minSubscription, setMinSubscription ] = useState(0);
-    const [ _minSubscription, _setMinSubscription ] = useState(5.00);
+    const [ _minSubscription, _setMinSubscription ] = useState(0);
     const [ warningMsg, setWarningMsg ] = useState("");
 
     useEffect(() => {
@@ -45,6 +45,10 @@ function CreatedOther(props) {
             .shiftedBy(18))));
         }
     }, [props.currentSubscription])
+
+    useEffect(() => {
+        _setMinSubscription(props.minSubscription);
+    }, [props.minSubscription]);
 
     const intervalCall = () => {
         setBalance(BigNumber(((Date.now() - props.flowInfo.timestamp) * Number(props.flowInfo.flowRate)) / 1000).shiftedBy(-18).toFixed(8).toString());

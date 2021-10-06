@@ -76,7 +76,7 @@ function Creator(props) {
 
     const getFlow = async () => {
         await props.sf.cfa.getFlow({
-            superToken: tokens.ropsten.fDAIx,
+            superToken: tokens.rinkeby.fDAIx,
             sender: props.account,
             receiver: pageAddress
         })
@@ -92,7 +92,7 @@ function Creator(props) {
     const createStream = async streamAmount => {
         await props.sf.user({
           address: props.account,
-          token: tokens.ropsten.fDAIx
+          token: tokens.rinkeby.fDAIx
         })
         .flow({
           recipient: pageAddress,
@@ -103,7 +103,8 @@ function Creator(props) {
             await getFlow();
           })();
         })
-        .catch(() => {
+        .catch(e => {
+            console.error(e);
           (async () => {
             await getFlow();
           })();
@@ -130,6 +131,7 @@ function Creator(props) {
                     createStream={createStream} 
                     address={pageAddress} 
                     currentSubscription={currentSubscription}
+                    minSubscription={minSubscription}
                     flowInfo={flowInfo}
                     username={username}
                     bio={bio}

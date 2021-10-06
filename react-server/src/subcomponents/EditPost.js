@@ -5,23 +5,32 @@ function EditPost(props) {
     const [ text, setText ] = useState("");
     const [ warningMsg, setWarningMsg ] = useState("");
     const [ selectedFile, setSelectedFile ] = useState(null);
+    const [ uploadingFile, setUploadingFile ] = useState(false);
 
     const onFileChange = e => {
         if (e.target.files.length > 0) {
+            setText("");
+            setUploadingFile(true);
             setSelectedFile(e.target.files[0]);
         }
         else {
             setSelectedFile(null);
+            setUploadingFile(false);
         }
     }
+
+    const gridTemplateRows = uploadingFile ? "0px 10px" : "auto 10px";
 
     return (
         <Card className="SubscriptionContent" style={{
             padding: "0px",
             display: "grid",
-            gridTemplateRows: "auto 10px",
-            minHeight: "100px"
+            gridTemplateRows: gridTemplateRows,
+            minHeight: "46px"
         }}>
+            {uploadingFile === true ? 
+            <div></div>
+            :
             <textarea 
                 rows="4"
                 style={{
@@ -41,6 +50,7 @@ function EditPost(props) {
                 }}
             >
             </textarea>
+            }
             <div style={{
                 display: "flex",
                 justifyContent: "space-between",
@@ -57,8 +67,7 @@ function EditPost(props) {
                     </>
                     }
                 </div>
-                <div>
-                    {/* 
+                <div>                    
                     <input type="file" id="selectedFile" style={{display: "none"}} 
                         onChange={onFileChange}
                     />
@@ -79,7 +88,7 @@ function EditPost(props) {
                         onClick={() => {
                             document.getElementById("selectedFile").click()
                         }} 
-                    /> */}
+                    />
                     <Button className="cancel-button" onClick={() => {
                         props.setContentCreationMode(false);
                     }}>
