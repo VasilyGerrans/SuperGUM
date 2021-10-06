@@ -3,6 +3,7 @@ import { Button } from 'antd';
 import { calculateFlowRate } from '../config';
 import BigNumber from 'bignumber.js';
 import { Spinner } from 'react-bootstrap';
+import AddressDisplay from './AddressDisplay';
 
 function CreatedOther(props) {
     const [ balance, setBalance ] = useState(0);
@@ -102,11 +103,13 @@ function CreatedOther(props) {
         }
     }
 
-    return ( // add a little clipboard copy thing next to the address later
+    return (
         <div>
             <div className="CreatedOther">                         
                 <h1><b>{props.username}</b></h1>
-                <p className="account-highlight">{props.address}</p>
+                <AddressDisplay
+                    address={props.address}
+                />
                 <div className="bio-window">
                     <p>
                         {props.bio}

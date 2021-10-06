@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Button, Input } from 'antd';
 import AutosizeInput from 'react-input-autosize';
+import AddressDisplay from './AddressDisplay';
 
 function CreatingUser(props) {
     const [ username, setUsername ] = useState("");
@@ -70,7 +71,9 @@ function CreatingUser(props) {
                 </span>
             </div>                    
         </div>                   
-        <p className="account-highlight">{props.address}</p>
+        <AddressDisplay
+            address={props.address}
+        />
         <div className="bio-window">
             <div style={{
                 position: "relative",

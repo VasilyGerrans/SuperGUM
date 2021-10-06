@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { useMoralisQuery } from 'react-moralis';
-import SubscriptionContent from './SubscriptionContent';
 import ConnectViaMetaMask from './subcomponents/ConnectViaMetaMask';
 import Post from './subcomponents/Post';
 import NothingYetGo from './subcomponents/NothingYetGo';
