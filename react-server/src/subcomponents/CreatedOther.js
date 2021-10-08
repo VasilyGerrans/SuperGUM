@@ -220,7 +220,11 @@ function CreatedOther(props) {
                         setMinSubscription(_minSubscription);
                         setEditMode(true)
                     }}>
-                        View content
+                        {_minSubscription === 0 ? 
+                        <span>Donate</span>
+                        :
+                        <span>View content</span>
+                        }
                     </Button>
                 </div>
             :
@@ -244,7 +248,11 @@ function CreatedOther(props) {
                                 setEditMode(false);
                                 setProcessingSF(true);                             
                             }}>
-                                Subscribe
+                                {_minSubscription === 0 ?
+                                <span>Donate</span>
+                                :
+                                <span>Subscribe</span>
+                                }
                             </Button>
                             <Button className="cancel-button" onClick={() => {                            
                                 setEditMode(false);  

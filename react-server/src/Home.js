@@ -117,27 +117,36 @@ function Home(props) {
         }
     }
 
-    /* const uploadFile = async file => {
-        let ContentClass = props.Moralis.Object.extend("Content");
-        const newContent = new ContentClass;
-        newContent.set("ethAddress", pageAddress);
-        const name = pageAddress + "-" + Date.now();
-        console.log(1);
-        const moralisFile = new props.Moralis.File(name, file);
-        console.log(2);
-        await moralisFile.saveIPFS()
-        .then(async () => {
-            console.log(3);
+    const uploadFile = async file => {
+        const uploadProcess = async () => {
+            let ContentClass = props.Moralis.Object.extend("Content");
+            const newContent = new ContentClass;
+            newContent.set("ethAddress", pageAddress);
+            const name = pageAddress + "-" + Date.now();
+            const moralisFile = new props.Moralis.File(name, file);
+            await moralisFile.saveIPFS();
             newContent.set("IPFS", moralisFile.ipfs());
-        })
-        .catch(e => {
-            console.log(4);
-            newContent.set("file", moralisFile);
-        });
-        console.log(5);
-        await newContent.save();
-        return newContent;
-    } */
+            await newContent.save()
+            .then(createdContent => {
+                setPageContent([createdContent, ...pageContent]);
+            });
+            return newContent;
+        }
+
+        if (props.isAuthenticated === false) {
+            await props.Moralis.authenticate()
+            .then(async () => {
+                const content = await uploadProcess();
+                return content;
+            })
+            .catch(e => {
+                return;
+            });
+        } else {
+            const content = await uploadProcess();
+            return content;
+        }
+    }
 
     const deleteContent = async objectId => {
         const query = new props.Moralis.Query("Content");
@@ -234,7 +243,7 @@ function Home(props) {
             <EditPost
                 setContentCreationMode={setContentCreationMode}
                 createContent={createContent}
-                /* uploadFile={uploadFile} */
+                uploadFile={uploadFile}
             />            
             }
             {pageContent.map(c => { 
@@ -242,7 +251,8 @@ function Home(props) {
                 <Post 
                     key={c.id} 
                     contentKey={c.id} 
-                    content={c.attributes.content} 
+                    content={c}
+                    attributes={c.attributes}
                     deleteContent={deleteContent} 
                     createdAt={c.createdAt}
                 />)

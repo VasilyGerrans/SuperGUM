@@ -1,7 +1,22 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Card, Button } from 'antd';
 
 function Post(props) {
+    const [ image, setImage ] = useState(undefined);
+
+    useEffect(() => {
+        if (props.attributes.IPFS !== undefined) {
+            (async () => {
+                await fetch(props.attributes.IPFS)
+                .then(response => response.blob())
+                .then(imageBlob => {
+                    const localUrl = URL.createObjectURL(imageBlob);
+                    setImage(localUrl);
+                });
+            })();
+        }
+    }, [props.attributes]);
+
     const parseDate = createdAt => {
         if (createdAt === undefined) {
             return "";
@@ -24,13 +39,25 @@ function Post(props) {
                 display: "grid",
                 gridTemplateRows: "auto auto 50px"
             }}>
+                {image === undefined ? 
                 <div style={{
                     margin: "20px", 
                     border: "0px",
                     fontSize: "20px"
                 }}>
-                    {props.content}
+                    {props.content.attributes.content}
                 </div>
+                :
+                <div style={{
+                    margin: "20px", 
+                    border: "0px",
+                    fontSize: "20px"
+                }}>
+                    <a href={props.attributes.IPFS} target="_blank">
+                        <img height="200" src={image} /> 
+                    </a>
+                </div>
+                }
                 <hr style={{margin: "0"}} />
                 <div style={{
                     display: "flex",

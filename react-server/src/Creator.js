@@ -147,7 +147,8 @@ function Creator(props) {
                     <Post 
                         key={c.id} 
                         contentKey={c.id} 
-                        content={c.attributes.content} 
+                        content={c} 
+                        attributes={c.attributes}                        
                         createdAt={c.createdAt}
                     />)
                 })}

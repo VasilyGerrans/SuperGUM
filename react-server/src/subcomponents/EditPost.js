@@ -68,7 +68,7 @@ function EditPost(props) {
                     }
                 </div>
                 <div>                    
-                    {/* <input type="file" id="selectedFile" style={{display: "none"}} 
+                    <input type="file" id="selectedFile" style={{display: "none"}} 
                         onChange={onFileChange}
                     />
                         {selectedFile !== null && selectedFile.name ?
@@ -88,7 +88,7 @@ function EditPost(props) {
                         onClick={() => {
                             document.getElementById("selectedFile").click()
                         }} 
-                    /> */}
+                    />
                     <Button className="cancel-button" onClick={() => {
                         props.setContentCreationMode(false);
                     }}>
@@ -97,7 +97,7 @@ function EditPost(props) {
                     <Button className="confirm-button" onClick={() => {
                         if (text.trim() === "") {
                             setWarningMsg("Error: please enter some content before publishing.");
-                            /* if (selectedFile === null) {
+                            if (selectedFile === null) {
                                 setWarningMsg("Error: please enter some content before publishing.");
                             }
                             else {
@@ -114,7 +114,7 @@ function EditPost(props) {
                                 else {
                                     setWarningMsg("Error: the only supported formats are png, jpeg, gif, mp3 and mp4.");
                                 }
-                            } */
+                            }
                         }
                         else {
                             props.createContent(text.trim());

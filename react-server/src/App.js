@@ -14,7 +14,7 @@ import Creator from './Creator';
 import './App.css';
 
 function App () {
-  const { web3, Moralis } = useMoralis();
+  const { web3, Moralis, isAuthenticated } = useMoralis();
   const [ sf, setSf ] = useState({});
   const [ connected, setConnected ] = useState(true);
   const [ account, setAccount ] = useState(""); // belonging to the client
@@ -152,6 +152,7 @@ function App () {
               Moralis={Moralis}
               account={account}
               connected={connected}
+              isAuthenticated={isAuthenticated}
             />              
           </Route>
           <Route>
