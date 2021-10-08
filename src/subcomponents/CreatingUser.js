@@ -140,6 +140,7 @@ function CreatingUser(props) {
                 }
                 else {
                     (async () => props.createPage(username, props.address, bio, Number(minSubscription)))();
+                    props.setPageCreationMode(false);
                 }
             }}>
                 Create

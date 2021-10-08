@@ -214,6 +214,7 @@ function Home(props) {
                     createPage={createPage}
                     usernameCharacterLimit={usernameCharacterLimit}
                     bioCharacterLimit={bioCharacterLimit}
+                    setPageCreationMode={setPageCreationMode}
                 />
                 :
                 <CreatedUser 

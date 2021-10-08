@@ -90,6 +90,7 @@ function Creator(props) {
             setCurrentSubscription(calculateStream(Number(result.flowRate)));
         })
         .catch(e => {
+            setFlowInfo(flowInfo);
             console.error(e);
         })
     }

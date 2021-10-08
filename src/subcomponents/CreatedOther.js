@@ -18,6 +18,10 @@ function CreatedOther(props) {
     const [ warningMsg, setWarningMsg ] = useState("");
 
     useEffect(() => {
+        console.log("changed processing to", processingSF);
+    }, [processingSF]);
+
+    useEffect(() => {
         if (props.flowInfo !== undefined && 
         props.flowInfo.timestamp !== undefined &&
         props.flowInfo.flowRate !== undefined) {
@@ -214,6 +218,9 @@ function CreatedOther(props) {
             editMode === false ? 
                 <div>
                     <br />
+                    {processingSF === true ?
+                    <Spinner animation="grow" role="status"></Spinner>
+                    :
                     <Button onClick={() => {
                         setPerSecond(BigNumber(calculateFlowRate(BigNumber(_minSubscription)
                         .shiftedBy(18))));
@@ -226,6 +233,7 @@ function CreatedOther(props) {
                         <span>View content</span>
                         }
                     </Button>
+                    }
                 </div>
             :
                 <div>
@@ -245,8 +253,9 @@ function CreatedOther(props) {
                         <div>
                             <Button className="confirm-button" onClick={() => {    
                                 props.createStream(perSecond);
-                                setEditMode(false);
+                                console.log("SHOULD CALL SETSF");
                                 setProcessingSF(true);                             
+                                setEditMode(false);
                             }}>
                                 {_minSubscription === 0 ?
                                 <span>Donate</span>

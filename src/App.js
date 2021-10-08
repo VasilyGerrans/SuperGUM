@@ -21,8 +21,10 @@ function App () {
   const [ fDAIx, setfDAIx ] = useState({});
   const [ balance, setBalance ] = useState(0);
   const [ validNetwork, setValidNetwork ] = useState(true);
+  const [ netFlow, setNetFlow ] = useState(0);
 
   const history = useHistory();
+  const startingTime = Date.now();
 
   useEffect(() => {
     const path = window.location.pathname.slice(1);
@@ -44,6 +46,11 @@ function App () {
       (async () => {
         await getBalance();
       })();
+      if (netFlow === 0) {
+        (async () => {
+          await updateSuperfluidFlows();
+        })();
+      }
     }
   }, [account]);
 
@@ -67,7 +74,8 @@ function App () {
             setfDAIx(fDAIx);
             setSf(sf);
       
-            await getAccount();
+            await getAccount()
+            .then(updateSuperfluidFlows)
           }
         })();
       } else {
@@ -83,6 +91,21 @@ function App () {
         setValidNetwork(false);
       }
     });
+  }
+
+  const updateSuperfluidFlows = async () => {
+    if (web3.utils.isAddress(account)) {
+      const superfluidUser = sf.user({
+        address: account,
+        token: tokens.rinkeby.fDAIx
+      })
+      await superfluidUser.details()
+      .then(details => {
+        if (details !== undefined) {
+          setNetFlow(Number(details.cfa.netFlow));
+        }
+      })
+    }
   }
 
   const getAccount = async () => {
@@ -152,6 +175,8 @@ function App () {
           connected={connected} 
           account={account} 
           history={history}
+          netFlow={netFlow}
+          startingTime={startingTime}
         />
         <div>
           <Switch>

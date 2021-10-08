@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Navbar } from 'react-bootstrap';
 import { Button } from 'antd';
 import NavbarCollapse from 'react-bootstrap/esm/NavbarCollapse';
@@ -6,11 +6,26 @@ import BigNumber from 'bignumber.js';
 import Logo from './images/logo.png';
 
 function StickyHeader(props) {
+    const [ balance, setBalance ] = useState(BigNumber(0));
+
+    useEffect(() => {
+        if (props.balance !== undefined && props.netFlow !== undefined) {
+            const interval = setInterval(intervalCall, 1000);
+            return () => {
+                clearInterval(interval);
+            }
+        }
+    }, [props.balance, props.netFlow]);
+
     const enableWallet = async () => {
         window.ethereum.request({ 
             method: 'eth_requestAccounts' 
         });
         await props.getAccount();
+    }
+
+    const intervalCall = () => {
+        setBalance(BigNumber(props.balance + ((Date.now() - props.startingTime) / 1000 * props.netFlow)));
     }
 
     return (
@@ -33,7 +48,7 @@ function StickyHeader(props) {
                         Balance
                     </a>                    
                     :&nbsp;
-                    {BigNumber(props.balance).shiftedBy(-18).toFixed(3).toString()} DAIx
+                    {balance.shiftedBy(-18).toFixed(3).toString()} DAIx
                 </NavbarCollapse>
                 :
                 <NavbarCollapse className="justify-content-end" style={{"display" : "none !important"}}>
