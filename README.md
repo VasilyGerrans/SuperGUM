@@ -2,7 +2,7 @@
 
 # SuperGUM
 
-Do you fear your subscription platform of choice randomly banning you on trumped-up charges, changes in policy, or government intervention?
+Do you fear your subscription platform of choice randomly banning you on trumped-up charges or due to government intervention?
 
 Have you been hearing about the countless internet creators disenfranchised by their platforms, left to rebuild years of work elsewhere?
 
