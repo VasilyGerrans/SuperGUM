@@ -6,7 +6,7 @@ Do you fear your subscription platform of choice randomly banning you on trumped
 
 Have you been hearing about the countless internet creators disenfranchised by their platforms, left to rebuild years of work elsewhere?
 
-Time is overdue for a creator payment platform which is too decentralised to censor! 
+Time is overdue for a creator payment platform which is __too__ decentralised to censor! 
 
 **SuperGUM** is built on top of Ethereum and uses the blockchain to store content in a decentralised fashion.
 
