@@ -10,6 +10,12 @@ export const tokens = {
         fDAIx: "0x745861AeD1EEe363b4AaA5F1994Be40b1e05Ff90"
     }
 }
+export const moralisLoginData = {
+    rinkeby: {
+        appId: "qZdzeSFxrSXTqgck1FO2xWVk0KYtWPEARPwrL0iY",
+        serverUrl: "https://jnjm6yafecq0.moralishost.com:2053/server"
+    }
+}
 export function calculateFlowRate(amount) {
     let fr = amount / (86400 * 30)
     return Math.floor(fr);
