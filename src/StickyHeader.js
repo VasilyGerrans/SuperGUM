@@ -42,7 +42,7 @@ function StickyHeader(props) {
                         SuperGUM
                     </h2>
                 </Navbar.Brand>
-                {(props.balance > 0) ? 
+                {(balance > 0) ? 
                 <NavbarCollapse className="justify-content-end" style={{"display" : "none !important"}}>
                     <a href="https://app.superfluid.finance/dashboard" target="_blank" rel="noreferrer">
                         Balance
