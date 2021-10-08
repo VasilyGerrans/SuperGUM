@@ -3,7 +3,6 @@ import { useMoralis } from 'react-moralis';
 import { Switch, Route } from 'react-router-dom';
 import { useHistory } from 'react-router';
 import Web3 from 'web3';
-import { Spinner } from 'react-bootstrap';
 import detectEthereumProvider from '@metamask/detect-provider';
 import SuperFluidSDK from '@superfluid-finance/js-sdk';
 import StickyHeader from './StickyHeader';
@@ -97,7 +96,7 @@ function App () {
 
     function handleAccountsChanged(accounts) {
       if (accounts.length === 0) {
-        console.log("CONNECT TO METAMASK");
+        setAccount("0x0000000000000000000000000000000000000000");
       }
       else if (accounts[0] !== currentAccount) {
         currentAccount = accounts[0];

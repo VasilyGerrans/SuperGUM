@@ -117,6 +117,28 @@ function Home(props) {
         }
     }
 
+    /* const uploadFile = async file => {
+        let ContentClass = props.Moralis.Object.extend("Content");
+        const newContent = new ContentClass;
+        newContent.set("ethAddress", pageAddress);
+        const name = pageAddress + "-" + Date.now();
+        console.log(1);
+        const moralisFile = new props.Moralis.File(name, file);
+        console.log(2);
+        await moralisFile.saveIPFS()
+        .then(async () => {
+            console.log(3);
+            newContent.set("IPFS", moralisFile.ipfs());
+        })
+        .catch(e => {
+            console.log(4);
+            newContent.set("file", moralisFile);
+        });
+        console.log(5);
+        await newContent.save();
+        return newContent;
+    } */
+
     const deleteContent = async objectId => {
         const query = new props.Moralis.Query("Content");
         const result = await query.equalTo("objectId", objectId).first();
@@ -212,6 +234,7 @@ function Home(props) {
             <EditPost
                 setContentCreationMode={setContentCreationMode}
                 createContent={createContent}
+                /* uploadFile={uploadFile} */
             />            
             }
             {pageContent.map(c => { 

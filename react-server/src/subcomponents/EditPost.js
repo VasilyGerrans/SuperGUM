@@ -68,7 +68,7 @@ function EditPost(props) {
                     }
                 </div>
                 <div>                    
-                    <input type="file" id="selectedFile" style={{display: "none"}} 
+                    {/* <input type="file" id="selectedFile" style={{display: "none"}} 
                         onChange={onFileChange}
                     />
                         {selectedFile !== null && selectedFile.name ?
@@ -88,27 +88,23 @@ function EditPost(props) {
                         onClick={() => {
                             document.getElementById("selectedFile").click()
                         }} 
-                    />
+                    /> */}
                     <Button className="cancel-button" onClick={() => {
                         props.setContentCreationMode(false);
                     }}>
                         Cancel
                     </Button>
                     <Button className="confirm-button" onClick={() => {
-                        if (text.trim() === "" && warningMsg === "") {
+                        if (text.trim() === "") {
                             setWarningMsg("Error: please enter some content before publishing.");
-                            /* 
-                            if (selectedFile === null) {
+                            /* if (selectedFile === null) {
                                 setWarningMsg("Error: please enter some content before publishing.");
                             }
                             else {
                                 if (["image/png", "image/jpeg", "image/gif", "video/mp4", "audio/mpeg"].includes(selectedFile.type)) {
                                     if (selectedFile.size < 5242880) {
                                         console.log(selectedFile);
-                                        saveFile(selectedFile.name, selectedFile, { 
-                                            type: selectedFile.type,
-                                            saveIPFS: true 
-                                        });
+                                        props.uploadFile(selectedFile);
                                         props.setContentCreationMode(false);
                                     }
                                     else {
