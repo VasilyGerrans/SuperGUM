@@ -17,7 +17,7 @@ The time has come for a creator payment platform which is <em>too</em> decentral
 
 **SuperGUM** is built with [Superfluid](https://www.superfluid.finance/home), allowing fans to spend an amount exactly proportional to the time spent accessing the content.
 
-**SuperGUM** uses decentralised frontend hosting provided by [Skynet](https://siasky.net/) which ensures protection against bans from hosting providers and allows you to participate in keeping the platform online. Anybody can save their own copy of **SuperGUM** onto Skynet and ensure access the to app <em>forever</em>.
+**SuperGUM** uses decentralised frontend hosting provided by [Skynet](https://siasky.net/) which ensures protection against bans from hosting providers and allows you to participate in keeping the platform online. Anybody can save their own copy of the **SuperGUM** frontend on Skynet and ensure access the to app <em>forever</em>.
 
 You might be thinking to yourself: “How can one human being have possibly built all of that in just one month?” The answer is [Moralis](https://moralis.io/) – the ultimate web3 development platform – which services all page content and supplies the methods for storing files on [IPFS](https://en.wikipedia.org/wiki/InterPlanetary_File_System).
 
