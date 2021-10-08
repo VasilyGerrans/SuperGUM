@@ -4,6 +4,7 @@ import { Card, Button } from 'antd';
 function Post(props) {
     const [ image, setImage ] = useState(undefined);
     const [ audio, setAudio ] = useState(undefined);
+    const [ video, setVideo ] = useState(undefined);
 
     useEffect(() => {
         if (props.attributes.IPFS !== undefined) {
@@ -12,10 +13,14 @@ function Post(props) {
                 .then(response => response.blob())
                 .then(imageBlob => {
                     const localUrl = URL.createObjectURL(imageBlob);
+                    console.log(imageBlob);
                     if (imageBlob.type.startsWith("image")) {
                         setImage(localUrl);
                     } else if (imageBlob.type.startsWith("audio")) {
                         setAudio(localUrl);
+                    }
+                    else if (imageBlob.type.startsWith("video")) {
+                        setVideo(localUrl);
                     }
                 });
             })();
@@ -64,6 +69,11 @@ function Post(props) {
                         Audio not supported.
                     </audio>
                     : 
+                    video !== undefined ?
+                    <video height="240" controls>
+                        <source src={video} type="video/mp4" />
+                    </video>
+                    :
                     <span>
                         {props.content.attributes.content} 
                     </span>
