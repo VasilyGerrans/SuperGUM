@@ -22,7 +22,7 @@ function AddressDisplay(props) {
                 {props.address}
             </p>
             &nbsp;
-            <a href={"https://ropsten.etherscan.io/address/" + props.address} target="_blank" rel="noreferrer">
+            <a href={"https://rinkeby.etherscan.io/address/" + props.address} target="_blank" rel="noreferrer">
                 <img src={Etherscan} width="15px" height="15px" alt="view in Etherscan"/>
             </a>
         </div>
