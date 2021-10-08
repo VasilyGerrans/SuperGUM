@@ -13,7 +13,6 @@ function Post(props) {
                 .then(response => response.blob())
                 .then(imageBlob => {
                     const localUrl = URL.createObjectURL(imageBlob);
-                    console.log(imageBlob);
                     if (imageBlob.type.startsWith("image")) {
                         setImage(localUrl);
                     } else if (imageBlob.type.startsWith("audio")) {
@@ -26,10 +25,6 @@ function Post(props) {
             })();
         }
     }, [props.attributes]);
-
-    useEffect(() => {
-        console.log("A", audio, "B", image);
-    }, [audio, image]);
 
     const parseDate = createdAt => {
         if (createdAt === undefined) {

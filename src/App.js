@@ -11,6 +11,7 @@ import { tokens } from './config';
 import Home from './Home';
 import Creator from './Creator';
 import './App.css';
+import OnlyAvailableOnRinkeby from './subcomponents/OnlyAvailableOnRinkeby';
 
 function App () {
   const { web3, Moralis, isAuthenticated } = useMoralis();
@@ -19,6 +20,7 @@ function App () {
   const [ account, setAccount ] = useState("");
   const [ fDAIx, setfDAIx ] = useState({});
   const [ balance, setBalance ] = useState(0);
+  const [ validNetwork, setValidNetwork ] = useState(true);
 
   const history = useHistory();
 
@@ -32,10 +34,9 @@ function App () {
         await initWeb3();
       })();
     }
-  }, []);
+  }, [validNetwork]);
 
   useEffect(() => {
-    console.log("account has changed to", account);
     if (web3.utils.isAddress(account)) {
       if (account.toLowerCase() === window.location.pathname.slice(1).toLowerCase()) {
         history.push("/");
@@ -50,25 +51,38 @@ function App () {
     const provider = await detectEthereumProvider();
     const web3 = new Web3(provider);
 
-    if (provider) {
-      const sf = new SuperFluidSDK.Framework({
-        web3: web3
-      });
+    web3.eth.net.getId()
+    .then(id => {
+      if (id === 4) {
+        (async () => {
+          if (provider) {
+            const sf = new SuperFluidSDK.Framework({
+              web3: web3
+            });
+      
+            await sf.initialize();
+      
+            const fDAIx = new web3.eth.Contract(fDAIxabi, tokens.rinkeby.fDAIx);
+      
+            setfDAIx(fDAIx);
+            setSf(sf);
+      
+            await getAccount();
+          }
+        })();
+      } else {
+        setValidNetwork(false);
+      }
+    });
 
-      console.log(web3);
-
-      await sf.initialize();
-
-      const fDAIx = new web3.eth.Contract(fDAIxabi, tokens.rinkeby.fDAIx);
-
-      setfDAIx(fDAIx);
-      setSf(sf);
-
-      await getAccount();
-    }
-    else {
-      console.log("CONNECT METAMASK");
-    }
+    window.ethereum.on("networkChanged", id => {
+      if (Number(id) === 4) {
+        setValidNetwork(true);
+      }
+      else {
+        setValidNetwork(false);
+      }
+    });
   }
 
   const getAccount = async () => {
@@ -104,11 +118,9 @@ function App () {
   const isConnected = () => {
     let accts = window.ethereum._state.accounts;
     if (accts.length === 0) {
-      console.log("NOT CONNECTED");
       setConnected(false);
     }
     else {
-      console.log("CONNECTED");
       history.push("/");
       setConnected(true);
       setAccount(accts[0]);
@@ -120,7 +132,6 @@ function App () {
       if (account.length > 0) {
         await fDAIx.methods.balanceOf(account).call({from: account})
         .then(bal => {
-          console.log("balance", bal, typeof(bal), typeof(Number(bal)));
           setBalance(Number(bal));
         });
       }
@@ -132,36 +143,42 @@ function App () {
 
   return (
     <div className="App">
-      <StickyHeader 
-        balance={balance} 
-        getAccount={getAccount} 
-        setAccount={setAccount}
-        connected={connected} 
-        account={account} 
-        history={history}
-      />
+      {validNetwork === true ?
       <div>
-        <Switch>
-          <Route exact path="/">
-            <Home
-              web3={web3}
-              Moralis={Moralis}
-              account={account}
-              connected={connected}
-              isAuthenticated={isAuthenticated}
-            />              
-          </Route>
-          <Route>
-            <Creator 
-              web3={web3}
-              account={account}
-              connected={connected}
-              history={history}
-              sf={sf}
-            />              
-          </Route>
-        </Switch>
+        <StickyHeader 
+          balance={balance} 
+          getAccount={getAccount} 
+          setAccount={setAccount}
+          connected={connected} 
+          account={account} 
+          history={history}
+        />
+        <div>
+          <Switch>
+            <Route exact path="/">
+              <Home
+                web3={web3}
+                Moralis={Moralis}
+                account={account}
+                connected={connected}
+                isAuthenticated={isAuthenticated}
+              />              
+            </Route>
+            <Route>
+              <Creator 
+                web3={web3}
+                account={account}
+                connected={connected}
+                history={history}
+                sf={sf}
+              />              
+            </Route>
+          </Switch>
+        </div>
       </div>
+      :
+      <OnlyAvailableOnRinkeby />
+      }
     </div>
   );
 }
