@@ -32,7 +32,12 @@ function Creator(props) {
     }, [pageAddress]);
 
     useEffect(() => {
-        setPageAddress(props.web3.utils.toChecksumAddress(window.location.pathname.slice(1)));
+        if (props.web3.utils.isAddress(window.location.pathname.slice(1))) {
+            setPageAddress(props.web3.utils.toChecksumAddress(window.location.pathname.slice(1)));
+        }
+        else {
+            props.history.push("/"); 
+        }
     }, []);
 
     useEffect(() => {

@@ -3,6 +3,7 @@ import { Card, Button } from 'antd';
 
 function Post(props) {
     const [ image, setImage ] = useState(undefined);
+    const [ audio, setAudio ] = useState(undefined);
 
     useEffect(() => {
         if (props.attributes.IPFS !== undefined) {
@@ -11,11 +12,19 @@ function Post(props) {
                 .then(response => response.blob())
                 .then(imageBlob => {
                     const localUrl = URL.createObjectURL(imageBlob);
-                    setImage(localUrl);
+                    if (imageBlob.type.startsWith("image")) {
+                        setImage(localUrl);
+                    } else if (imageBlob.type.startsWith("audio")) {
+                        setAudio(localUrl);
+                    }
                 });
             })();
         }
     }, [props.attributes]);
+
+    useEffect(() => {
+        console.log("A", audio, "B", image);
+    }, [audio, image]);
 
     const parseDate = createdAt => {
         if (createdAt === undefined) {
@@ -39,25 +48,27 @@ function Post(props) {
                 display: "grid",
                 gridTemplateRows: "auto auto 50px"
             }}>
-                {image === undefined ? 
                 <div style={{
                     margin: "20px", 
                     border: "0px",
                     fontSize: "20px"
                 }}>
-                    {props.content.attributes.content}
-                </div>
-                :
-                <div style={{
-                    margin: "20px", 
-                    border: "0px",
-                    fontSize: "20px"
-                }}>
+                    {image !== undefined ? 
                     <a href={props.attributes.IPFS} target="_blank">
                         <img height="200" src={image} /> 
                     </a>
+                    :
+                    audio !== undefined ?
+                    <audio controls>
+                        <source src={audio} type="audio/mpeg"/>
+                        Audio not supported.
+                    </audio>
+                    : 
+                    <span>
+                        {props.content.attributes.content} 
+                    </span>
+                    }
                 </div>
-                }
                 <hr style={{margin: "0"}} />
                 <div style={{
                     display: "flex",

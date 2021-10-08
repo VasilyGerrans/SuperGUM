@@ -17,7 +17,7 @@ function App () {
   const { web3, Moralis, isAuthenticated } = useMoralis();
   const [ sf, setSf ] = useState({});
   const [ connected, setConnected ] = useState(true);
-  const [ account, setAccount ] = useState(""); // belonging to the client
+  const [ account, setAccount ] = useState("");
   const [ fDAI, setfDAI ] = useState({});
   const [ fDAIx, setfDAIx ] = useState({});
   const [ balance, setBalance ] = useState(0);
