@@ -10,10 +10,10 @@ Time is overdue for a creator payment platform which is <em>too</em> decentralis
 
 **SuperGUM** is built on top of Ethereum and uses the blockchain to store content in a decentralised fashion.
 
-• Using **SuperGUM** is as easy having a MetaMask wallet and connecting to running instance of the app.
-• **SuperGUM** uses [the Super DAI token](https://app.superfluid.finance/dashboard) as a medium of exchange.
-• Your wallet is your page, and all wallet pages can be accessed by simply typing an Ethereum wallet address after the URL. 
-• Your minimum subscription is the minimal monthly amount a follower must commit to in order to gain access to your content. 
+* Using **SuperGUM** is as easy having a MetaMask wallet and connecting to running instance of the app.
+* **SuperGUM** uses [the Super DAI token](https://app.superfluid.finance/dashboard) as a medium of exchange.
+* Your wallet is your page, and all wallet pages can be accessed by simply typing an Ethereum wallet address after the URL. 
+* Your minimum subscription is the minimal monthly amount a follower must commit to in order to gain access to your content. 
 
 **SuperGUM** is built with [Superfluid](https://www.superfluid.finance/home), allowing fans to spend an amount exactly proportional to the time spent accessing the content.
 
