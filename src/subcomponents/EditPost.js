@@ -102,13 +102,13 @@ function EditPost(props) {
                             }
                             else {
                                 if (["image/png", "image/jpeg", "image/gif", "video/mp4", "audio/mpeg"].includes(selectedFile.type)) {
-                                    if (selectedFile.size < 5242880) {
+                                    if (selectedFile.size < 10485760) {
                                         console.log(selectedFile);
                                         props.uploadFile(selectedFile);
                                         props.setContentCreationMode(false);
                                     }
                                     else {
-                                        setWarningMsg("Error: only files under 5MB allowed.");
+                                        setWarningMsg("Error: only files under 10MB allowed.");
                                     }
                                 }
                                 else {

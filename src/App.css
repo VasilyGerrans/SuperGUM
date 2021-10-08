@@ -5,12 +5,6 @@ body {
   font-family: Helvetica, Arial, sans-serif;
 }
 
-/* div {
-  box-sizing: border-box;
-  -moz-box-sizing: border-box;
-  -webkit-box-sizing: border-box;
-} */
-
 button, .dapp-button {
   background-color: rgb(255, 250, 241);
   box-shadow: 0px 2px 2px 0px rgb(240, 191, 191);
@@ -32,6 +26,10 @@ button, .dapp-button {
   font-size: small;
   margin: 30px 0px 0px 0px;
   text-align: left;
+}
+
+.rinkeby-highlight {
+  color: rgb(232, 190, 23);
 }
 
 .App {
