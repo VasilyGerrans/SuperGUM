@@ -6,7 +6,6 @@ import Web3 from 'web3';
 import detectEthereumProvider from '@metamask/detect-provider';
 import SuperFluidSDK from '@superfluid-finance/js-sdk';
 import StickyHeader from './StickyHeader';
-import { ERC20abi } from './abis/ERC20abi';
 import { fDAIxabi } from './abis/fDAIxabi';
 import { tokens } from './config';
 import Home from './Home';
@@ -18,7 +17,6 @@ function App () {
   const [ sf, setSf ] = useState({});
   const [ connected, setConnected ] = useState(true);
   const [ account, setAccount ] = useState("");
-  const [ fDAI, setfDAI ] = useState({});
   const [ fDAIx, setfDAIx ] = useState({});
   const [ balance, setBalance ] = useState(0);
 
@@ -61,10 +59,8 @@ function App () {
 
       await sf.initialize();
 
-      const fDAI = new web3.eth.Contract(ERC20abi, tokens.rinkeby.fDAI);
       const fDAIx = new web3.eth.Contract(fDAIxabi, tokens.rinkeby.fDAIx);
 
-      setfDAI(fDAI);
       setfDAIx(fDAIx);
       setSf(sf);
 

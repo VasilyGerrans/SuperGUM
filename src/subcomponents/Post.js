@@ -59,8 +59,8 @@ function Post(props) {
                     fontSize: "20px"
                 }}>
                     {image !== undefined ? 
-                    <a href={props.attributes.IPFS} target="_blank">
-                        <img height="200" src={image} /> 
+                    <a href={props.attributes.IPFS} target="_blank" rel="noreferrer">
+                        <img height="200" src={image} alt="post" /> 
                     </a>
                     :
                     audio !== undefined ?
