@@ -1,13 +1,5 @@
 [![Add to Homescreen](https://img.shields.io/badge/Skynet-Add%20To%20Homescreen-00c65e?logo=skynet&labelColor=0d0d0d)](https://homescreen.hns.siasky.net/#/skylink/[skylink])
 
-# SuperGUM
-
-Do you fear your subscription platform of choice randomly banning you on trumped-up charges or due to government intervention?
-
-Have you been hearing about the countless internet creators disenfranchised by their platforms, left to rebuild years of work elsewhere?
-
-The time has come for a creator payment platform which is <em>too</em> decentralised to censor! 
-
 **SuperGUM** is built on top of Ethereum and uses the blockchain to store content in a decentralised fashion.
 
 * Using **SuperGUM** is as easy having a MetaMask wallet and connecting to a running instance of the app.
