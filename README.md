@@ -1,6 +1,6 @@
 [![Add to Homescreen](https://img.shields.io/badge/Skynet-Add%20To%20Homescreen-00c65e?logo=skynet&labelColor=0d0d0d)](https://homescreen.hns.siasky.net/#/skylink/[skylink])
 
-**SuperGUM** is built on top of Ethereum and uses the blockchain to store content in a decentralised fashion.
+**SuperGUM** is a decentralised subscription-based content sharing platform.
 
 * Using **SuperGUM** is as easy having a MetaMask wallet and connecting to a running instance of the app.
 * **SuperGUM** uses [the Super DAI token](https://app.superfluid.finance/dashboard) as a medium of exchange.
